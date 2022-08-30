@@ -50,7 +50,14 @@ view model =
     , body =
         [ Element.layout
             [ Element.padding 50
-            , Element.Background.color <| Element.rgb 0.2 0.2 0.2
+            , Element.Background.gradient
+                { angle = 2.8
+                , steps =
+                    [ Element.rgb255 204 149 192
+                    , Element.rgb255 219 212 180
+                    , Element.rgb255 122 161 210
+                    ]
+                }
             ]
             (View.Experimental.viewSkillButton model UseSkill)
         ]
