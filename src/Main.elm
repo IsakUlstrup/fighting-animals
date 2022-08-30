@@ -78,8 +78,12 @@ view model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Browser.Events.onAnimationFrameDelta Tick
+subscriptions model =
+    if Skill.isReady model then
+        Sub.none
+
+    else
+        Browser.Events.onAnimationFrameDelta Tick
 
 
 
