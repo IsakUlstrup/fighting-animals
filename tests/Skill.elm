@@ -66,5 +66,17 @@ suite =
                              else
                                 ( clamp 0 1000 randomInt1 + clamp 0 1000 randomInt2, 1000 )
                             )
+            , fuzz int "Is skill ready (off cooldown)?" <|
+                \randomInt ->
+                    Engine.Skill.new "Name" "Description" 1000
+                        |> Engine.Skill.cooldown randomInt
+                        |> Engine.Skill.isReady
+                        |> Expect.equal
+                            (if randomInt >= 1000 then
+                                True
+
+                             else
+                                False
+                            )
             ]
         ]
