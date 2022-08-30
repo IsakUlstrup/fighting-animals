@@ -1,8 +1,10 @@
 module Main exposing (Model, main)
 
 import Browser exposing (Document)
-import Engine.Animal as Animal exposing (Animal)
+import Browser.Events
+import Engine.Skill as Skill exposing (Skill)
 import Html exposing (Html, h3, text)
+import Html.Attributes
 
 
 
@@ -10,30 +12,44 @@ import Html exposing (Html, h3, text)
 
 
 type alias Model =
-    Animal
+    Skill
 
 
 init : () -> ( Model, Cmd msg )
 init _ =
-    ( Animal.new "panda", Cmd.none )
+    ( Skill.new "Attack" "Example skill" 1000 |> Skill.cooldown 100, Cmd.none )
 
 
 
 -- UPDATE
 
 
-update : msg -> Model -> ( Model, Cmd msg )
-update _ model =
-    ( model, Cmd.none )
+type Msg
+    = Tick Float
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        Tick dt ->
+            ( model |> Skill.cooldown (round dt), Cmd.none )
 
 
 
 -- VIEW
 
 
-viewAnimal : Animal -> Html msg
-viewAnimal animal =
-    Html.div [] [ text animal.name ]
+viewSkill : Skill -> Html msg
+viewSkill skill =
+    Html.div []
+        [ Html.h5 [] [ text skill.name ]
+        , Html.p [] [ text skill.description ]
+        , Html.meter
+            [ Html.Attributes.max (Tuple.second skill.cooldownTime |> String.fromInt)
+            , Html.Attributes.value (Tuple.first skill.cooldownTime |> String.fromInt)
+            ]
+            []
+        ]
 
 
 view : Model -> Document msg
@@ -41,7 +57,7 @@ view model =
     { title = "Fighting Animals"
     , body =
         [ h3 [] [ text "Fighting animals" ]
-        , viewAnimal model
+        , viewSkill model
         ]
     }
 
@@ -50,16 +66,16 @@ view model =
 -- SUBSCRIPTIONS
 
 
-subscriptions : Model -> Sub msg
+subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Sub.none
+    Browser.Events.onAnimationFrameDelta Tick
 
 
 
 -- MAIN
 
 
-main : Program () Model msg
+main : Program () Model Msg
 main =
     Browser.document
         { init = init
