@@ -54,7 +54,12 @@ viewSkill skill =
             , Html.Attributes.value (Tuple.first skill.cooldownTime |> String.fromInt)
             ]
             []
-        , Html.button [ Html.Events.onClick UseSkill ] [ text "Use Skill" ]
+        , Html.br [] []
+        , Html.button
+            [ Html.Events.onClick UseSkill
+            , Html.Attributes.disabled (Skill.isReady skill |> not)
+            ]
+            [ text "Use Skill" ]
         ]
 
 
