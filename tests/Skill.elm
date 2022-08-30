@@ -41,6 +41,11 @@ suite =
                         |> Engine.Skill.cooldown randomInt
                         |> .cooldownTime
                         |> Expect.equal
-                            ( randomInt, 1000 )
+                            (if randomInt < 0 then
+                                ( 0, 1000 )
+
+                             else
+                                ( randomInt, 1000 )
+                            )
             ]
         ]

@@ -17,4 +17,4 @@ new name description cooldownTime =
 
 cooldown : Int -> Skill -> Skill
 cooldown amount skill =
-    { skill | cooldownTime = Tuple.mapFirst ((+) amount) skill.cooldownTime }
+    { skill | cooldownTime = Tuple.mapFirst ((+) <| max 0 amount) skill.cooldownTime }
