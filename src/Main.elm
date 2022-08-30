@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg, main)
+module Main exposing (Model, main)
 
 import Browser exposing (Document)
 import Engine.Animal as Animal exposing (Animal)
@@ -13,7 +13,7 @@ type alias Model =
     Animal
 
 
-init : () -> ( Model, Cmd Msg )
+init : () -> ( Model, Cmd msg )
 init _ =
     ( Animal.new "panda", Cmd.none )
 
@@ -22,15 +22,9 @@ init _ =
 -- UPDATE
 
 
-type Msg
-    = NoOp
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    case msg of
-        NoOp ->
-            ( model, Cmd.none )
+update : msg -> Model -> ( Model, Cmd msg )
+update _ model =
+    ( model, Cmd.none )
 
 
 
@@ -42,7 +36,7 @@ viewAnimal animal =
     Html.div [] [ text animal.name ]
 
 
-view : Model -> Document Msg
+view : Model -> Document msg
 view model =
     { title = "Fighting Animals"
     , body =
@@ -56,7 +50,7 @@ view model =
 -- SUBSCRIPTIONS
 
 
-subscriptions : Model -> Sub Msg
+subscriptions : Model -> Sub msg
 subscriptions _ =
     Sub.none
 
@@ -65,7 +59,7 @@ subscriptions _ =
 -- MAIN
 
 
-main : Program () Model Msg
+main : Program () Model msg
 main =
     Browser.document
         { init = init

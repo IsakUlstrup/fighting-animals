@@ -10,8 +10,7 @@ suite : Test
 suite =
     describe "Animal module"
         [ describe "New animal"
-            [ -- fuzz runs the test 100 times with randomly-generated inputs!
-              fuzz string "new animal with fuzz name." <|
+            [ fuzz string "new animal with fuzz name." <|
                 \randomlyGeneratedString ->
                     randomlyGeneratedString
                         |> Engine.Animal.new
