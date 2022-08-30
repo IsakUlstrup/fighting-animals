@@ -9,12 +9,21 @@ type alias Skill =
 
 
 {-| Create new skill
+
+cooldownTime is intended to be milliseconds
+
 -}
 new : String -> String -> Int -> Skill
 new name description cooldownTime =
     Skill name description ( 0, max 0 cooldownTime )
 
 
+{-| Reduce cooldown by amount
+-}
 cooldown : Int -> Skill -> Skill
 cooldown amount skill =
-    { skill | cooldownTime = Tuple.mapFirst ((+) <| max 0 amount) skill.cooldownTime }
+    let
+        updateRemaining i =
+            (+) i >> clamp 0 (Tuple.second skill.cooldownTime)
+    in
+    { skill | cooldownTime = Tuple.mapFirst (updateRemaining amount) skill.cooldownTime }

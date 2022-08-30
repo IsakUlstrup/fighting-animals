@@ -44,6 +44,9 @@ suite =
                             (if randomInt < 0 then
                                 ( 0, 1000 )
 
+                             else if randomInt > 1000 then
+                                ( 1000, 1000 )
+
                              else
                                 ( randomInt, 1000 )
                             )
