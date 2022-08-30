@@ -2,9 +2,11 @@ module Engine.Skill exposing (Skill, new)
 
 
 type alias Skill =
-    { name : String }
+    { name : String
+    , description : String
+    }
 
 
-new : String -> Skill
-new name =
-    Skill name
+new : String -> String -> Skill
+new name description =
+    Skill name description
