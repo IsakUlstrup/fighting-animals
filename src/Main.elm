@@ -1,8 +1,8 @@
 module Main exposing (Model, Msg, main)
 
 import Browser exposing (Document)
-import Html exposing (button, h3, p, text)
-import Html.Events exposing (onClick)
+import Engine.Animal as Animal exposing (Animal)
+import Html exposing (Html, h3, text)
 
 
 
@@ -10,12 +10,12 @@ import Html.Events exposing (onClick)
 
 
 type alias Model =
-    Int
+    Animal
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( 0, Cmd.none )
+    ( Animal.new "panda", Cmd.none )
 
 
 
@@ -23,37 +23,31 @@ init _ =
 
 
 type Msg
-    = Increment
-    | Decrement
-    | Reset
+    = NoOp
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Increment ->
-            ( model + 1, Cmd.none )
-
-        Decrement ->
-            ( model - 1, Cmd.none )
-
-        Reset ->
-            ( 0, Cmd.none )
+        NoOp ->
+            ( model, Cmd.none )
 
 
 
 -- VIEW
 
 
+viewAnimal : Animal -> Html msg
+viewAnimal animal =
+    Html.div [] [ text animal.name ]
+
+
 view : Model -> Document Msg
 view model =
-    { title = "Elm App"
+    { title = "Fighting Animals"
     , body =
-        [ h3 [] [ text "Elm counter" ]
-        , p [] [ text <| String.fromInt model ]
-        , button [ onClick Increment ] [ text "+" ]
-        , button [ onClick Decrement ] [ text "-" ]
-        , button [ onClick Reset ] [ text "Reset" ]
+        [ h3 [] [ text "Fighting animals" ]
+        , viewAnimal model
         ]
     }
 
@@ -79,4 +73,3 @@ main =
         , update = update
         , subscriptions = subscriptions
         }
-
