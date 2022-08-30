@@ -19,7 +19,7 @@ viewSpinner percentage icon =
                 , Svg.Attributes.width "40px"
                 ]
                 [ Svg.circle
-                    [ Svg.Attributes.stroke "grey"
+                    [ Svg.Attributes.stroke "rgb(138, 7, 107)"
                     , Svg.Attributes.fill "none"
                     , Svg.Attributes.strokeWidth "2"
                     , Svg.Attributes.cx "16"
