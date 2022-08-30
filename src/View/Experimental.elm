@@ -1,6 +1,6 @@
 module View.Experimental exposing (viewSkillButton)
 
-import Element exposing (Attribute, Element, el, fill, maximum, pointer, rgb255, rgba255, text)
+import Element exposing (Attribute, Element, el, fill, pointer, rgb255, rgba255, text)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events
