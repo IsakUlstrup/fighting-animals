@@ -25,6 +25,7 @@ viewSpinner percentage icon =
                     , Svg.Attributes.cx "16"
                     , Svg.Attributes.cy "16"
                     , Svg.Attributes.r "15.9155"
+                    , Svg.Attributes.shapeRendering "geometricPrecision"
                     ]
                     []
                 , Svg.circle
@@ -36,6 +37,7 @@ viewSpinner percentage icon =
                     , Svg.Attributes.cx "16"
                     , Svg.Attributes.cy "16"
                     , Svg.Attributes.r "15.9155"
+                    , Svg.Attributes.shapeRendering "geometricPrecision"
                     , Svg.Attributes.strokeDasharray ((clamp 0 100 percentage |> String.fromInt) ++ ", 100")
                     ]
                     []
@@ -77,6 +79,12 @@ viewSkillButton skill clickMsg =
                , Element.spacing 10
                , Font.color <| rgb255 50 50 50
                , Element.width fill
+               , Border.shadow
+                    { offset = ( 0.5, 0.5 )
+                    , size = 2
+                    , blur = 8
+                    , color = rgba255 50 50 50 0.2
+                    }
                ]
         )
         [ viewSpinner (((Skill.currentCooldown skill |> toFloat) / (Tuple.second skill.cooldownTime |> toFloat)) * 100 |> round) 'x'
