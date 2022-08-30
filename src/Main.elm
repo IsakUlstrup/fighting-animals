@@ -6,6 +6,7 @@ import Engine.Skill as Skill exposing (Skill)
 import Html exposing (Html, h3, text)
 import Html.Attributes
 import Html.Events
+import View.Experimental
 
 
 
@@ -44,31 +45,12 @@ update msg model =
 -- VIEW
 
 
-viewSkill : Skill -> Html Msg
-viewSkill skill =
-    Html.div []
-        [ Html.h5 [] [ text skill.name ]
-        , Html.p [] [ text skill.description ]
-        , Html.meter
-            [ Html.Attributes.max (Tuple.second skill.cooldownTime |> String.fromInt)
-            , Html.Attributes.value (Skill.currentCooldown skill |> String.fromInt)
-            ]
-            []
-        , Html.br [] []
-        , Html.button
-            [ Html.Events.onClick UseSkill
-            , Html.Attributes.disabled (Skill.isReady skill |> not)
-            ]
-            [ text "Use Skill" ]
-        ]
-
-
 view : Model -> Document Msg
 view model =
     { title = "Fighting Animals"
     , body =
         [ h3 [] [ text "Fighting animals" ]
-        , viewSkill model
+        , View.Experimental.viewSkillButton model UseSkill
         ]
     }
 
