@@ -1,6 +1,6 @@
 module View.Experimental exposing (viewSkillButton)
 
-import Element exposing (Attribute, Element, centerX, el, fill, pointer, rgb255, rgba255, text)
+import Element exposing (Attribute, Element, centerX, el, fill, maximum, pointer, rgb255, rgba255, text)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events
@@ -78,7 +78,8 @@ viewSkillButton skill clickMsg =
                     }
                , Element.spacing 10
                , Font.color <| rgb255 50 50 50
-               , Element.width fill
+               , Element.centerX
+               , Element.width (fill |> maximum 500)
                , Border.shadow
                     { offset = ( 0.5, 0.5 )
                     , size = 2
