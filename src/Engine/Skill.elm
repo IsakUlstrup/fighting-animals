@@ -1,4 +1,4 @@
-module Engine.Skill exposing (Skill, cooldown, isReady, new)
+module Engine.Skill exposing (Skill, cooldown, isReady, new, use)
 
 
 type alias Skill =
@@ -31,8 +31,26 @@ cooldown amount skill =
     { skill | cooldownTime = Tuple.mapFirst (updateRemaining amount) skill.cooldownTime }
 
 
+{-| Reset skill cooldown
+-}
+resetCooldown : Skill -> Skill
+resetCooldown skill =
+    { skill | cooldownTime = Tuple.mapFirst (always 0) skill.cooldownTime }
+
+
 {-| Is skill ready (off cooldown)?
 -}
 isReady : Skill -> Bool
 isReady skill =
     Tuple.first skill.cooldownTime == Tuple.second skill.cooldownTime
+
+
+{-| Use skill if ready
+-}
+use : Skill -> Skill
+use skill =
+    if isReady skill then
+        resetCooldown skill
+
+    else
+        skill

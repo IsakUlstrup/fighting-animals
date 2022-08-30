@@ -37,7 +37,7 @@ update msg model =
             ( model |> Skill.cooldown (round dt), Cmd.none )
 
         UseSkill ->
-            ( model, Cmd.none )
+            ( model |> Skill.use, Cmd.none )
 
 
 

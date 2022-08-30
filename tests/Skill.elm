@@ -78,5 +78,18 @@ suite =
                              else
                                 False
                             )
+            , fuzz int "Cooldown skill by random amount, the attempt to use it" <|
+                \randomInt ->
+                    Engine.Skill.new "Name" "Description" 1000
+                        |> Engine.Skill.cooldown randomInt
+                        |> Engine.Skill.use
+                        |> .cooldownTime
+                        |> Expect.equal
+                            (if randomInt >= 1000 then
+                                ( 0, 1000 )
+
+                             else
+                                ( clamp 0 1000 randomInt, 1000 )
+                            )
             ]
         ]
