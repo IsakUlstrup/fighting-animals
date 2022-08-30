@@ -2,10 +2,9 @@ module Main exposing (Model, Msg, main)
 
 import Browser exposing (Document)
 import Browser.Events
+import Element
+import Element.Background
 import Engine.Skill as Skill exposing (Skill)
-import Html exposing (Html, h3, text)
-import Html.Attributes
-import Html.Events
 import View.Experimental
 
 
@@ -49,8 +48,11 @@ view : Model -> Document Msg
 view model =
     { title = "Fighting Animals"
     , body =
-        [ h3 [] [ text "Fighting animals" ]
-        , View.Experimental.viewSkillButton model UseSkill
+        [ Element.layout
+            [ Element.padding 50
+            , Element.Background.color <| Element.rgb 0.2 0.2 0.2
+            ]
+            (View.Experimental.viewSkillButton model UseSkill)
         ]
     }
 
