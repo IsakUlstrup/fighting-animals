@@ -10,4 +10,4 @@ type alias Skill =
 
 new : String -> String -> Int -> Skill
 new name description cooldown =
-    Skill name description ( 0, cooldown )
+    Skill name description ( 0, max 0 cooldown )

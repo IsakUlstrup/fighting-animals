@@ -3,28 +3,35 @@ module Skill exposing (suite)
 import Engine.Skill
 import Expect
 import Fuzz exposing (int, string)
-import Test exposing (Test, describe, fuzz, fuzz2)
+import Test exposing (Test, describe, fuzz)
 
 
 suite : Test
 suite =
     describe "Skill module"
         [ describe "New skill"
-            [ fuzz2 string string "new skill with fuzz name and description" <|
-                \randomName randomDescription ->
-                    Engine.Skill.new randomName randomDescription 1000
+            [ fuzz string "new skill with random name " <|
+                \radnomString ->
+                    Engine.Skill.new radnomString "Description" 1000
+                        |> .name
                         |> Expect.equal
-                            { name = randomName
-                            , description = randomDescription
-                            , cooldown = ( 0, 1000 )
-                            }
-            , fuzz int "new skill with fuzz cooldown" <|
-                \randomCooldown ->
-                    Engine.Skill.new "Name" "Description" randomCooldown
+                            radnomString
+            , fuzz string "new skill with random description " <|
+                \randomString ->
+                    Engine.Skill.new "Name" randomString 1000
+                        |> .description
                         |> Expect.equal
-                            { name = "Name"
-                            , description = "Description"
-                            , cooldown = ( 0, randomCooldown )
-                            }
+                            randomString
+            , fuzz int "new skill with fuzz cooldown, should be (0, > 0)" <|
+                \randomInt ->
+                    Engine.Skill.new "Name" "Description" randomInt
+                        |> .cooldown
+                        |> Expect.equal
+                            (if randomInt < 0 then
+                                ( 0, 0 )
+
+                             else
+                                ( 0, randomInt )
+                            )
             ]
         ]
