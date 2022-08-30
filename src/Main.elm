@@ -51,7 +51,7 @@ viewSkill skill =
         , Html.p [] [ text skill.description ]
         , Html.meter
             [ Html.Attributes.max (Tuple.second skill.cooldownTime |> String.fromInt)
-            , Html.Attributes.value (Tuple.first skill.cooldownTime |> String.fromInt)
+            , Html.Attributes.value (Skill.currentCooldown skill |> String.fromInt)
             ]
             []
         , Html.br [] []
