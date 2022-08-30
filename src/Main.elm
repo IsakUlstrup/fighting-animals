@@ -26,7 +26,7 @@ init _ =
 
 
 type Msg
-    = Tick Float
+    = Tick Int
     | UseSkill
 
 
@@ -34,7 +34,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Tick dt ->
-            ( model |> Skill.cooldown (round dt), Cmd.none )
+            ( model |> Skill.cooldown dt, Cmd.none )
 
         UseSkill ->
             ( model |> Skill.use, Cmd.none )
@@ -81,7 +81,7 @@ subscriptions model =
         Sub.none
 
     else
-        Browser.Events.onAnimationFrameDelta Tick
+        Browser.Events.onAnimationFrameDelta (round >> Tick)
 
 
 
