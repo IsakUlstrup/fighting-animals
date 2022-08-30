@@ -49,7 +49,7 @@ view model =
     { title = "Fighting Animals"
     , body =
         [ Element.layout
-            [ Element.padding 50
+            [ Element.padding 30
             , Element.Background.gradient
                 { angle = 2.8
                 , steps =
