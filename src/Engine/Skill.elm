@@ -23,7 +23,9 @@ new name description cooldownTime =
 cooldown : Int -> Skill -> Skill
 cooldown amount skill =
     let
+        -- Update remaining time, negative numbers are ignored, result is capped at max skill cooldown
+        updateRemaining : Int -> Int -> Int
         updateRemaining i =
-            (+) i >> clamp 0 (Tuple.second skill.cooldownTime)
+            (+) (max 0 i) >> min (Tuple.second skill.cooldownTime)
     in
     { skill | cooldownTime = Tuple.mapFirst (updateRemaining amount) skill.cooldownTime }

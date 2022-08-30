@@ -3,7 +3,7 @@ module Skill exposing (suite)
 import Engine.Skill
 import Expect
 import Fuzz exposing (int, string)
-import Test exposing (Test, describe, fuzz, test)
+import Test exposing (Test, describe, fuzz, fuzz2, test)
 
 
 suite : Test
@@ -49,6 +49,22 @@ suite =
 
                              else
                                 ( randomInt, 1000 )
+                            )
+            , fuzz2 int int "Reduce cooldown on skill by random amount twice" <|
+                \randomInt1 randomInt2 ->
+                    Engine.Skill.new "Name" "Description" 1000
+                        |> Engine.Skill.cooldown randomInt1
+                        |> Engine.Skill.cooldown randomInt2
+                        |> .cooldownTime
+                        |> Expect.equal
+                            (if clamp 0 1000 randomInt1 + clamp 0 1000 randomInt2 < 0 then
+                                ( 0, 1000 )
+
+                             else if clamp 0 1000 randomInt1 + clamp 0 1000 randomInt2 > 1000 then
+                                ( 1000, 1000 )
+
+                             else
+                                ( clamp 0 1000 randomInt1 + clamp 0 1000 randomInt2, 1000 )
                             )
             ]
         ]
