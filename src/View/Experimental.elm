@@ -78,8 +78,7 @@ viewSkillButton skill clickMsg =
                     }
                , Element.spacing 15
                , Font.color <| rgb255 50 50 50
-               , Element.centerX
-               , Element.width (fill |> maximum 500)
+               , Element.width fill
                , Border.shadow
                     { offset = ( 0.5, 0.5 )
                     , size = 2
@@ -89,7 +88,7 @@ viewSkillButton skill clickMsg =
                ]
         )
         [ viewSpinner (((Skill.currentCooldown skill |> toFloat) / (Tuple.second skill.cooldownTime |> toFloat)) * 100 |> round) 'x'
-        , Element.column []
+        , Element.column [ Element.spacing 3 ]
             [ el [ Font.size 16 ] (text skill.name)
             , el
                 [ Font.size 12

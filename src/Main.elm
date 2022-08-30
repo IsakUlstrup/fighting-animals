@@ -59,7 +59,9 @@ view model =
                     ]
                 }
             ]
-            (View.Experimental.viewSkillButton model UseSkill)
+            (Element.column [ Element.width (Element.fill |> Element.maximum 500), Element.height Element.fill, Element.centerX ]
+                [ Element.el [ Element.alignBottom, Element.width Element.fill ] (View.Experimental.viewSkillButton model UseSkill) ]
+            )
         ]
     }
 
