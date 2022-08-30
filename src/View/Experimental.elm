@@ -1,6 +1,6 @@
 module View.Experimental exposing (viewSkillButton)
 
-import Element exposing (Attribute, Element, el, pointer, rgb255, rgba255, text)
+import Element exposing (Attribute, Element, centerX, el, fill, pointer, rgb255, rgba255, text)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events
@@ -76,14 +76,16 @@ viewSkillButton skill clickMsg =
                     }
                , Element.spacing 10
                , Font.color <| rgb255 50 50 50
+               , Element.width fill
                ]
         )
         [ viewSpinner (((Skill.currentCooldown skill |> toFloat) / (Tuple.second skill.cooldownTime |> toFloat)) * 100 |> round) 'x'
-        , Element.column []
+        , Element.column [ centerX ]
             [ el [ Font.size 16 ] (text skill.name)
             , el
                 [ Font.size 12
-                , Font.light
+                , Font.extraLight
+                , Font.color <| rgb255 110 110 110
                 ]
                 (text skill.description)
             ]
