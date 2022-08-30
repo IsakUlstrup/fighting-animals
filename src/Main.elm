@@ -1,10 +1,11 @@
-module Main exposing (Model, main)
+module Main exposing (Model, Msg, main)
 
 import Browser exposing (Document)
 import Browser.Events
 import Engine.Skill as Skill exposing (Skill)
 import Html exposing (Html, h3, text)
 import Html.Attributes
+import Html.Events
 
 
 
@@ -26,6 +27,7 @@ init _ =
 
 type Msg
     = Tick Float
+    | UseSkill
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -34,12 +36,15 @@ update msg model =
         Tick dt ->
             ( model |> Skill.cooldown (round dt), Cmd.none )
 
+        UseSkill ->
+            ( model, Cmd.none )
+
 
 
 -- VIEW
 
 
-viewSkill : Skill -> Html msg
+viewSkill : Skill -> Html Msg
 viewSkill skill =
     Html.div []
         [ Html.h5 [] [ text skill.name ]
@@ -49,10 +54,11 @@ viewSkill skill =
             , Html.Attributes.value (Tuple.first skill.cooldownTime |> String.fromInt)
             ]
             []
+        , Html.button [ Html.Events.onClick UseSkill ] [ text "Use Skill" ]
         ]
 
 
-view : Model -> Document msg
+view : Model -> Document Msg
 view model =
     { title = "Fighting Animals"
     , body =
