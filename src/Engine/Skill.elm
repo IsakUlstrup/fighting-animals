@@ -1,4 +1,13 @@
-module Engine.Skill exposing (Skill, SkillState(..), cooldownPercentage, isActive, isReady, new, tick, use)
+module Engine.Skill exposing
+    ( Skill
+    , SkillState(..)
+    , cooldownPercentage
+    , isActive
+    , isReady
+    , new
+    , tick
+    , use
+    )
 
 
 type alias Skill =
@@ -54,23 +63,28 @@ setActive skill =
     { skill | state = Active ( 0, skill.useTime ) }
 
 
-{-| Reduce timer by amount
-
-Counts upwards, so (100, 100) is done, (50, 100) is halfway
-
+{-| tick skill state timers, does not advance state
 -}
-tickTime : Int -> ( Int, Int ) -> ( Int, Int )
-tickTime amount time =
+tickState : Int -> Skill -> Skill
+tickState time skill =
     let
         -- Update remaining time, negative numbers are ignored, result is capped at max time
-        updateRemaining : Int -> Int -> Int
-        updateRemaining i =
-            (+) (max 0 i) >> min (Tuple.second time)
+        updateRemaining : Int -> Int -> Int -> Int
+        updateRemaining remaining amount cap =
+            remaining + max 0 amount |> min cap
     in
-    Tuple.mapFirst (updateRemaining amount) time
+    case skill.state of
+        Ready ->
+            skill
+
+        Cooling ( current, max ) ->
+            { skill | state = Cooling <| ( updateRemaining current time max, max ) }
+
+        Active ( current, max ) ->
+            { skill | state = Active <| ( updateRemaining current time max, max ) }
 
 
-{-| Tick skill with delta time in ms and advance state.
+{-| Tick skill with delta time in ms and advance state if neccesary
 -}
 tick : Int -> Skill -> Skill
 tick dt skill =
@@ -83,14 +97,14 @@ tick dt skill =
                 setReady skill
 
             else
-                { skill | state = Cooling <| tickTime dt ( current, max ) }
+                tickState dt skill
 
         Active ( current, max ) ->
             if current + dt >= max then
                 setCooling skill
 
             else
-                { skill | state = Active <| tickTime dt ( current, max ) }
+                tickState dt skill
 
 
 {-| Get skill cooldown progress in percentage 0-100
@@ -108,7 +122,7 @@ cooldownPercentage skill =
                 100
 
             else
-                ((current |> toFloat) / (max |> toFloat)) * 100 |> round
+                (toFloat current / toFloat max) * 100 |> round
 
         Active _ ->
             100
