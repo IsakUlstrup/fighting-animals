@@ -64,7 +64,7 @@ viewSkillButton clickMsg skill =
                     { offset = ( 0.5, 0.5 )
                     , size = 3
                     , blur = 8
-                    , color = rgba255 247 183 226 0.5
+                    , color = rgba255 255 120 211 0.8
                     }
                 ]
 
