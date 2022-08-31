@@ -10,7 +10,7 @@ type alias Skill =
 
 
 type SkillState
-    = Cooling
+    = Cooling ( Int, Int )
     | Ready
 
 
@@ -21,7 +21,7 @@ cooldownTime is intended to be milliseconds
 -}
 new : String -> String -> Int -> Skill
 new name description cooldownTime =
-    Skill name description ( 0, max 0 cooldownTime ) Cooling
+    Skill name description ( 0, max 0 cooldownTime ) (Cooling ( 0, max 0 cooldownTime ))
 
 
 {-| Reduce cooldown by amount

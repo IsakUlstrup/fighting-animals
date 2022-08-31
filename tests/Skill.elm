@@ -37,7 +37,7 @@ newSkillTests =
                 Engine.Skill.new "Name" "Description" 1000
                     |> .state
                     |> Expect.equal
-                        Engine.Skill.Cooling
+                        (Engine.Skill.Cooling ( 0, 1000 ))
         ]
 
 
