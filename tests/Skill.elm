@@ -106,7 +106,7 @@ skillInteractionTests =
                     |> .state
                     |> Expect.equal
                         (if randomInt >= 1000 then
-                            Engine.Skill.Active ( 0, 100 )
+                            Engine.Skill.Active ( 0, 200 )
 
                          else
                             Engine.Skill.Cooling ( clamp 0 1000 randomInt, 1000 )

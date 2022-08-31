@@ -29,7 +29,7 @@ new name description cooldownTime =
         name
         description
         (max 0 cooldownTime)
-        100
+        200
         (Cooling ( 0, max 0 cooldownTime ))
 
 

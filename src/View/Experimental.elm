@@ -50,13 +50,33 @@ viewSkillButton skill clickMsg =
                 [ Element.Events.onClick clickMsg
                 , pointer
                 , Background.color <| rgba255 255 255 255 0.7
+                , Border.shadow
+                    { offset = ( 0.5, 0.5 )
+                    , size = 2
+                    , blur = 8
+                    , color = rgba255 50 50 50 0.2
+                    }
                 ]
 
             else if Skill.isActive s then
-                [ Background.color <| rgba255 255 0 255 0.5 ]
+                [ Background.color <| rgba255 255 255 255 0.7
+                , Border.shadow
+                    { offset = ( 0.5, 0.5 )
+                    , size = 3
+                    , blur = 8
+                    , color = rgba255 247 183 226 0.5
+                    }
+                ]
 
             else
-                [ Background.color <| rgba255 255 255 255 0.5 ]
+                [ Background.color <| rgba255 255 255 255 0.5
+                , Border.shadow
+                    { offset = ( 0.5, 0.5 )
+                    , size = 2
+                    , blur = 8
+                    , color = rgba255 50 50 50 0.2
+                    }
+                ]
     in
     Element.row
         (readyState skill
@@ -70,12 +90,6 @@ viewSkillButton skill clickMsg =
                , Element.spacing 15
                , Font.color <| rgb255 50 50 50
                , Element.width fill
-               , Border.shadow
-                    { offset = ( 0.5, 0.5 )
-                    , size = 2
-                    , blur = 8
-                    , color = rgba255 50 50 50 0.2
-                    }
                ]
         )
         [ viewSpinner (Skill.cooldownPercentage skill) '★'
