@@ -1,6 +1,6 @@
 module View.Experimental exposing (viewSkillButton)
 
-import Element exposing (Attribute, Element, el, fill, pointer, rgb255, rgba255, text)
+import Element exposing (Attribute, Element, el, fill, pointer, px, rgb255, rgba255, text)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events
@@ -12,23 +12,11 @@ import Svg.Attributes
 
 viewSpinner : Int -> Char -> Element msg
 viewSpinner percentage icon =
-    el [] <|
+    el [ Element.width <| px 40 ] <|
         Element.html <|
             svg
-                [ Svg.Attributes.viewBox "-1 -1 34 34"
-                , Svg.Attributes.width "40px"
-                ]
+                [ Svg.Attributes.viewBox "-1 -1 34 34" ]
                 [ Svg.circle
-                    [ Svg.Attributes.stroke "rgb(138, 7, 107)"
-                    , Svg.Attributes.fill "none"
-                    , Svg.Attributes.strokeWidth "2"
-                    , Svg.Attributes.cx "16"
-                    , Svg.Attributes.cy "16"
-                    , Svg.Attributes.r "15.9155"
-                    , Svg.Attributes.shapeRendering "geometricPrecision"
-                    ]
-                    []
-                , Svg.circle
                     [ Svg.Attributes.stroke "magenta"
                     , Svg.Attributes.fill "none"
                     , Svg.Attributes.transform "rotate(90, 16, 16)"
