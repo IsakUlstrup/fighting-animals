@@ -33,6 +33,27 @@ new name description cooldownTime =
         (Cooling ( 0, max 0 cooldownTime ))
 
 
+{-| Set skill state to ready
+-}
+setReady : Skill -> Skill
+setReady skill =
+    { skill | state = Ready }
+
+
+{-| Set skill state to cooling with timer at 0
+-}
+setCooling : Skill -> Skill
+setCooling skill =
+    { skill | state = Cooling ( 0, skill.cooldownTime ) }
+
+
+{-| Set skill state to active with timer at 0
+-}
+setActive : Skill -> Skill
+setActive skill =
+    { skill | state = Active ( 0, skill.useTime ) }
+
+
 {-| Reduce timer by amount
 
 Counts upwards, so (100, 100) is done, (50, 100) is halfway
@@ -59,14 +80,14 @@ tick dt skill =
 
         Cooling ( current, max ) ->
             if current + dt >= max then
-                { skill | state = Ready }
+                setReady skill
 
             else
                 { skill | state = Cooling <| tickTime dt ( current, max ) }
 
         Active ( current, max ) ->
             if current + dt >= max then
-                { skill | state = Cooling ( 0, skill.cooldownTime ) }
+                setCooling skill
 
             else
                 { skill | state = Active <| tickTime dt ( current, max ) }
@@ -127,7 +148,7 @@ isActive skill =
 use : Skill -> Skill
 use skill =
     if isReady skill then
-        { skill | state = Active ( 0, skill.useTime ) }
+        setActive skill
 
     else
         skill
