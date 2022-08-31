@@ -18,7 +18,7 @@ type alias Model =
 
 init : () -> ( Model, Cmd msg )
 init _ =
-    ( Skill.new "Attack" "Example skill" 1000 |> Skill.cooldown 100, Cmd.none )
+    ( Skill.new "Attack" "Example skill" 1000, Cmd.none )
 
 
 
@@ -34,7 +34,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Tick dt ->
-            ( model |> Skill.cooldown dt, Cmd.none )
+            ( model |> Skill.tick dt, Cmd.none )
 
         UseSkill ->
             ( model |> Skill.use, Cmd.none )

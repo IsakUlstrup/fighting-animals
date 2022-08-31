@@ -1,4 +1,4 @@
-module Engine.Skill exposing (Skill, SkillState(..), currentCooldown, isReady, new, tick, use)
+module Engine.Skill exposing (Skill, SkillState(..), cooldownPercentage, isReady, new, tick, use)
 
 
 type alias Skill =
@@ -34,6 +34,9 @@ new name description cooldownTime =
 
 
 {-| Reduce timer by amount
+
+Counts upwards, so (100, 100) is done, (50, 100) is halfway
+
 -}
 tickTime : Int -> ( Int, Int ) -> ( Int, Int )
 tickTime amount time =
@@ -69,16 +72,24 @@ tick dt skill =
                 { skill | state = Active <| tickTime dt ( current, max ) }
 
 
-{-| Get current cooldown time
--}
-currentCooldown : Skill -> Int
-currentCooldown skill =
-    case skill.state of
-        Cooling ( current, _ ) ->
-            current
+{-| Get skill cooldown progress in percentage 0-100
 
-        _ ->
-            0
+returns 100 for ready and active state
+
+useful for rendering
+
+-}
+cooldownPercentage : Skill -> Int
+cooldownPercentage skill =
+    case skill.state of
+        Cooling ( current, max ) ->
+            ((current |> toFloat) / (max |> toFloat)) * 100 |> round
+
+        Active _ ->
+            100
+
+        Ready ->
+            100
 
 
 {-| Is skill ready (off cooldown)?
@@ -89,7 +100,10 @@ isReady skill =
         Ready ->
             True
 
-        _ ->
+        Active _ ->
+            False
+
+        Cooling _ ->
             False
 
 

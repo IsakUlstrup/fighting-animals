@@ -75,7 +75,7 @@ viewSkillButton skill clickMsg =
                     }
                ]
         )
-        [ viewSpinner (((Skill.currentCooldown skill |> toFloat) / (Tuple.second skill.cooldownTime |> toFloat)) * 100 |> round) '★'
+        [ viewSpinner (Skill.cooldownPercentage skill) '★'
         , Element.column [ Element.spacing 3 ]
             [ el [ Font.size 16 ] (text skill.name)
             , el
