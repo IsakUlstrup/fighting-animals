@@ -2,6 +2,7 @@ module Main exposing (Model, Msg, main)
 
 import Browser exposing (Document)
 import Browser.Events
+import Content.Skills exposing (basicSkill)
 import Element
 import Element.Background
 import Engine.Skill as Skill exposing (Skill)
@@ -18,7 +19,7 @@ type alias Model =
 
 init : () -> ( Model, Cmd msg )
 init _ =
-    ( Skill.new "Attack" "Example skill" 1000, Cmd.none )
+    ( basicSkill, Cmd.none )
 
 
 
