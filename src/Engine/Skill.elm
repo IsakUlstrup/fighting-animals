@@ -1,11 +1,17 @@
-module Engine.Skill exposing (Skill, cooldown, currentCooldown, isReady, new, use)
+module Engine.Skill exposing (Skill, SkillState(..), cooldown, currentCooldown, isReady, new, use)
 
 
 type alias Skill =
     { name : String
     , description : String
     , cooldownTime : ( Int, Int )
+    , state : SkillState
     }
+
+
+type SkillState
+    = Cooling
+    | Ready
 
 
 {-| Create new skill
@@ -15,7 +21,7 @@ cooldownTime is intended to be milliseconds
 -}
 new : String -> String -> Int -> Skill
 new name description cooldownTime =
-    Skill name description ( 0, max 0 cooldownTime )
+    Skill name description ( 0, max 0 cooldownTime ) Cooling
 
 
 {-| Reduce cooldown by amount

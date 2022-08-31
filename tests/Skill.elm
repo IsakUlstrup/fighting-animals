@@ -3,7 +3,7 @@ module Skill exposing (newSkillTests, skillInteractionTests)
 import Engine.Skill
 import Expect
 import Fuzz exposing (int, string)
-import Test exposing (Test, describe, fuzz, fuzz2)
+import Test exposing (Test, describe, fuzz, fuzz2, test)
 
 
 newSkillTests : Test
@@ -32,6 +32,12 @@ newSkillTests =
                          else
                             ( 0, randomInt )
                         )
+        , test "new skill, state should be cooling" <|
+            \_ ->
+                Engine.Skill.new "Name" "Description" 1000
+                    |> .state
+                    |> Expect.equal
+                        Engine.Skill.Cooling
         ]
 
 
