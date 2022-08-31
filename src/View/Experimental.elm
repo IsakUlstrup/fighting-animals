@@ -1,6 +1,6 @@
 module View.Experimental exposing (viewSkillButton)
 
-import Element exposing (Attribute, Element, el, fill, pointer, px, rgb255, rgba255, text)
+import Element exposing (Attribute, Element, el, fill, pointer, px, rgb255, rgba255, scale, text)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events
@@ -60,6 +60,7 @@ viewSkillButton clickMsg skill =
 
             else if Skill.isActive s then
                 [ Background.color <| rgba255 255 255 255 0.7
+                , scale 1.05
                 , Border.shadow
                     { offset = ( 0.5, 0.5 )
                     , size = 3
