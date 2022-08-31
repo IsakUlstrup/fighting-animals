@@ -82,15 +82,21 @@ skillInteractionTests =
                     |> Engine.Skill.cooldownPercentage
                     |> Expect.equal
                         50
+        , fuzz2 int int "Tick skill by random delta time, then get cooldown progress" <|
+            \randomInt int2 ->
+                Engine.Skill.new "Name" "Description" int2
+                    |> Engine.Skill.tick randomInt
+                    |> Engine.Skill.cooldownPercentage
+                    |> Expect.equal
+                        (if randomInt >= int2 then
+                            100
 
-        {- , fuzz int "Tick skill by random delta time, then get cooldown progress" <|
-           \randomInt ->
-               Engine.Skill.new "Name" "Description" 1000
-                   |> Engine.Skill.tick randomInt
-                   |> Engine.Skill.cooldownPercentage
-                   |> Expect.equal
-                       (((randomInt |> toFloat) / (1000 |> toFloat)) * 100 |> round)
-        -}
+                         else if int2 <= 0 then
+                            100
+
+                         else
+                            ((max 0 randomInt |> toFloat) / (int2 |> toFloat)) * 100 |> round
+                        )
         , fuzz int "Is skill ready?" <|
             \randomInt ->
                 Engine.Skill.new "Name" "Description" 1000

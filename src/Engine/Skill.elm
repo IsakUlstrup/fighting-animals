@@ -104,7 +104,11 @@ cooldownPercentage : Skill -> Int
 cooldownPercentage skill =
     case skill.state of
         Cooling ( current, max ) ->
-            ((current |> toFloat) / (max |> toFloat)) * 100 |> round
+            if max == 0 then
+                100
+
+            else
+                ((current |> toFloat) / (max |> toFloat)) * 100 |> round
 
         Active _ ->
             100
