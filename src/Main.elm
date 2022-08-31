@@ -28,7 +28,21 @@ init _ =
 
 type Msg
     = Tick Int
-    | UseSkill
+    | UseSkill Int
+
+
+updateAtIndex : Int -> (Skill -> Skill) -> Int -> Skill -> Skill
+updateAtIndex target f index skill =
+    if index == target then
+        f skill
+
+    else
+        skill
+
+
+useSkill : Int -> List Skill -> List Skill
+useSkill index =
+    List.indexedMap (updateAtIndex index Skill.use)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -37,8 +51,8 @@ update msg model =
         Tick dt ->
             ( model |> List.map (Skill.tick dt), Cmd.none )
 
-        UseSkill ->
-            ( model |> List.map Skill.use, Cmd.none )
+        UseSkill index ->
+            ( model |> useSkill index, Cmd.none )
 
 
 
@@ -62,7 +76,7 @@ view model =
             ]
             (Element.column [ Element.width (Element.fill |> Element.maximum 500), Element.height Element.fill, Element.centerX ]
                 [ Element.column [ Element.alignBottom, Element.width Element.fill, Element.spacing 15 ]
-                    (List.map (View.Experimental.viewSkillButton UseSkill) model)
+                    (List.indexedMap (\i -> View.Experimental.viewSkillButton (UseSkill i)) model)
                 ]
             )
         ]
