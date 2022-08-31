@@ -6,6 +6,23 @@ import Fuzz exposing (int, string)
 import Test exposing (Test, describe, fuzz, fuzz2, test)
 
 
+
+---- HELPERS ----
+
+
+intPercentage : Int -> Int -> Int
+intPercentage i1 i2 =
+    if max 0 i2 == 0 then
+        100
+
+    else
+        ((max 0 i1 |> toFloat) / toFloat i2) * 100 |> round
+
+
+
+---- TESTS ----
+
+
 newSkillTests : Test
 newSkillTests =
     describe "New skill"
@@ -88,14 +105,11 @@ skillInteractionTests =
                     |> Engine.Skill.tick randomInt
                     |> Engine.Skill.cooldownPercentage
                     |> Expect.equal
-                        (if randomInt >= int2 then
-                            100
-
-                         else if int2 <= 0 then
+                        (if randomInt >= max 0 int2 then
                             100
 
                          else
-                            ((max 0 randomInt |> toFloat) / (int2 |> toFloat)) * 100 |> round
+                            intPercentage randomInt int2
                         )
         , fuzz int "Is skill ready?" <|
             \randomInt ->
