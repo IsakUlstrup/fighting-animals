@@ -1,61 +1,96 @@
-module Engine.Skill exposing (Skill, SkillState(..), cooldown, currentCooldown, isReady, new, use)
+module Engine.Skill exposing (Skill, SkillState(..), currentCooldown, isReady, new, tick, use)
 
 
 type alias Skill =
     { name : String
     , description : String
-    , cooldownTime : ( Int, Int )
+    , cooldownTime : Int
+    , useTime : Int
     , state : SkillState
     }
 
 
 type SkillState
-    = Cooling ( Int, Int )
-    | Ready
+    = Ready
+    | Cooling ( Int, Int )
+    | Active ( Int, Int )
 
 
 {-| Create new skill
 
 cooldownTime is intended to be milliseconds
 
+useTime is set to 100 ms for now
+
 -}
 new : String -> String -> Int -> Skill
 new name description cooldownTime =
-    Skill name description ( 0, max 0 cooldownTime ) (Cooling ( 0, max 0 cooldownTime ))
+    Skill
+        name
+        description
+        (max 0 cooldownTime)
+        100
+        (Cooling ( 0, max 0 cooldownTime ))
 
 
-{-| Reduce cooldown by amount
+{-| Reduce timer by amount
 -}
-cooldown : Int -> Skill -> Skill
-cooldown amount skill =
+tickTime : Int -> ( Int, Int ) -> ( Int, Int )
+tickTime amount time =
     let
-        -- Update remaining time, negative numbers are ignored, result is capped at max skill cooldown
+        -- Update remaining time, negative numbers are ignored, result is capped at max time
         updateRemaining : Int -> Int -> Int
         updateRemaining i =
-            (+) (max 0 i) >> min (Tuple.second skill.cooldownTime)
+            (+) (max 0 i) >> min (Tuple.second time)
     in
-    { skill | cooldownTime = Tuple.mapFirst (updateRemaining amount) skill.cooldownTime }
+    Tuple.mapFirst (updateRemaining amount) time
 
 
-{-| Reset skill cooldown
+{-| Tick skill with delta time in ms and advance state.
 -}
-resetCooldown : Skill -> Skill
-resetCooldown skill =
-    { skill | cooldownTime = Tuple.mapFirst (always 0) skill.cooldownTime }
+tick : Int -> Skill -> Skill
+tick dt skill =
+    case skill.state of
+        Ready ->
+            skill
+
+        Cooling ( current, max ) ->
+            if current + dt >= max then
+                { skill | state = Ready }
+
+            else
+                { skill | state = Cooling <| tickTime dt ( current, max ) }
+
+        Active ( current, max ) ->
+            if current + dt >= max then
+                { skill | state = Cooling ( 0, skill.cooldownTime ) }
+
+            else
+                { skill | state = Active <| tickTime dt ( current, max ) }
 
 
 {-| Get current cooldown time
 -}
 currentCooldown : Skill -> Int
 currentCooldown skill =
-    Tuple.first skill.cooldownTime
+    case skill.state of
+        Cooling ( current, _ ) ->
+            current
+
+        _ ->
+            0
 
 
 {-| Is skill ready (off cooldown)?
 -}
 isReady : Skill -> Bool
 isReady skill =
-    Tuple.first skill.cooldownTime == Tuple.second skill.cooldownTime
+    case skill.state of
+        Ready ->
+            True
+
+        _ ->
+            False
 
 
 {-| Use skill if ready
@@ -63,7 +98,7 @@ isReady skill =
 use : Skill -> Skill
 use skill =
     if isReady skill then
-        resetCooldown skill
+        { skill | state = Active ( 0, skill.useTime ) }
 
     else
         skill

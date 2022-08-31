@@ -24,13 +24,13 @@ newSkillTests =
         , fuzz int "new skill with random cooldown, should be (0, > 0)" <|
             \randomInt ->
                 Engine.Skill.new "Name" "Description" randomInt
-                    |> .cooldownTime
+                    |> .state
                     |> Expect.equal
                         (if randomInt < 0 then
-                            ( 0, 0 )
+                            Engine.Skill.Cooling ( 0, 0 )
 
                          else
-                            ( 0, randomInt )
+                            Engine.Skill.Cooling ( 0, randomInt )
                         )
         , test "new skill, state should be cooling" <|
             \_ ->
@@ -44,55 +44,55 @@ newSkillTests =
 skillInteractionTests : Test
 skillInteractionTests =
     describe "Skill interaction"
-        [ fuzz int "Reduce cooldown on skill by random amount" <|
+        [ fuzz int "Tick skill by random delta time" <|
             \randomInt ->
                 Engine.Skill.new "Name" "Description" 1000
-                    |> Engine.Skill.cooldown randomInt
-                    |> Engine.Skill.currentCooldown
+                    |> Engine.Skill.tick randomInt
+                    |> .state
                     |> Expect.equal
                         (if randomInt < 0 then
-                            0
+                            Engine.Skill.Cooling ( 0, 1000 )
 
                          else if randomInt > 1000 then
-                            1000
+                            Engine.Skill.Ready
 
                          else
-                            randomInt
+                            Engine.Skill.Cooling ( randomInt, 1000 )
                         )
-        , fuzz2 int int "Reduce cooldown on skill by random amount twice" <|
+        , fuzz2 int int "Tick skill by random delta time twice" <|
             \randomInt1 randomInt2 ->
                 Engine.Skill.new "Name" "Description" 1000
-                    |> Engine.Skill.cooldown randomInt1
-                    |> Engine.Skill.cooldown randomInt2
-                    |> Engine.Skill.currentCooldown
+                    |> Engine.Skill.tick randomInt1
+                    |> Engine.Skill.tick randomInt2
+                    |> .state
                     |> Expect.equal
                         (if clamp 0 1000 randomInt1 + clamp 0 1000 randomInt2 < 0 then
-                            0
+                            Engine.Skill.Cooling ( 0, 1000 )
 
-                         else if clamp 0 1000 randomInt1 + clamp 0 1000 randomInt2 > 1000 then
-                            1000
+                         else if clamp 0 1000 randomInt1 + clamp 0 1000 randomInt2 >= 1000 then
+                            Engine.Skill.Ready
 
                          else
-                            clamp 0 1000 randomInt1 + clamp 0 1000 randomInt2
+                            Engine.Skill.Cooling ( clamp 0 1000 randomInt1 + clamp 0 1000 randomInt2, 1000 )
                         )
-        , fuzz int "Is skill ready (off cooldown)?" <|
+        , fuzz int "Is skill ready?" <|
             \randomInt ->
                 Engine.Skill.new "Name" "Description" 1000
-                    |> Engine.Skill.cooldown randomInt
+                    |> Engine.Skill.tick randomInt
                     |> Engine.Skill.isReady
                     |> Expect.equal
                         (randomInt >= 1000)
-        , fuzz int "Cooldown skill by random amount, then attempt to use it" <|
+        , fuzz int "Tick skill by random delta time, then attempt to use it" <|
             \randomInt ->
                 Engine.Skill.new "Name" "Description" 1000
-                    |> Engine.Skill.cooldown randomInt
+                    |> Engine.Skill.tick randomInt
                     |> Engine.Skill.use
-                    |> Engine.Skill.currentCooldown
+                    |> .state
                     |> Expect.equal
                         (if randomInt >= 1000 then
-                            0
+                            Engine.Skill.Active ( 0, 100 )
 
                          else
-                            clamp 0 1000 randomInt
+                            Engine.Skill.Cooling ( clamp 0 1000 randomInt, 1000 )
                         )
         ]
