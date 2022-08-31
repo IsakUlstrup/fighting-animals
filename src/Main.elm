@@ -14,12 +14,12 @@ import View.Experimental
 
 
 type alias Model =
-    Skill
+    List Skill
 
 
 init : () -> ( Model, Cmd msg )
 init _ =
-    ( basicSkill, Cmd.none )
+    ( [ basicSkill ], Cmd.none )
 
 
 
@@ -35,10 +35,10 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Tick dt ->
-            ( model |> Skill.tick dt, Cmd.none )
+            ( model |> List.map (Skill.tick dt), Cmd.none )
 
         UseSkill ->
-            ( model |> Skill.use, Cmd.none )
+            ( model |> List.map Skill.use, Cmd.none )
 
 
 
@@ -62,10 +62,7 @@ view model =
             ]
             (Element.column [ Element.width (Element.fill |> Element.maximum 500), Element.height Element.fill, Element.centerX ]
                 [ Element.column [ Element.alignBottom, Element.width Element.fill, Element.spacing 15 ]
-                    [ View.Experimental.viewSkillButton model UseSkill
-                    , View.Experimental.viewSkillButton model UseSkill
-                    , View.Experimental.viewSkillButton model UseSkill
-                    ]
+                    (List.map (View.Experimental.viewSkillButton UseSkill) model)
                 ]
             )
         ]
@@ -78,7 +75,7 @@ view model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    if Skill.isReady model then
+    if List.all Skill.isReady model then
         Sub.none
 
     else

@@ -41,8 +41,8 @@ viewSpinner percentage icon =
                 ]
 
 
-viewSkillButton : Skill -> msg -> Element msg
-viewSkillButton skill clickMsg =
+viewSkillButton : msg -> Skill -> Element msg
+viewSkillButton clickMsg skill =
     let
         readyState : Skill -> List (Attribute msg)
         readyState s =
