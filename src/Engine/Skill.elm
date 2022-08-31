@@ -1,4 +1,4 @@
-module Engine.Skill exposing (Skill, SkillState(..), cooldownPercentage, isReady, new, tick, use)
+module Engine.Skill exposing (Skill, SkillState(..), cooldownPercentage, isActive, isReady, new, tick, use)
 
 
 type alias Skill =
@@ -102,6 +102,21 @@ isReady skill =
 
         Active _ ->
             False
+
+        Cooling _ ->
+            False
+
+
+{-| Is skill active?
+-}
+isActive : Skill -> Bool
+isActive skill =
+    case skill.state of
+        Ready ->
+            False
+
+        Active _ ->
+            True
 
         Cooling _ ->
             False

@@ -52,6 +52,9 @@ viewSkillButton skill clickMsg =
                 , Background.color <| rgba255 255 255 255 0.7
                 ]
 
+            else if Skill.isActive s then
+                [ Background.color <| rgba255 255 0 255 0.5 ]
+
             else
                 [ Background.color <| rgba255 255 255 255 0.5 ]
     in
