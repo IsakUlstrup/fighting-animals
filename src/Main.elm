@@ -21,7 +21,7 @@ type alias Model =
 
 init : () -> ( Model, Cmd msg )
 init _ =
-    ( Model [ Skills.basicSkill, Skills.slowSkill ] [], Cmd.none )
+    ( Model [ Skills.basicSkill, Skills.slowSkill, Skills.buffSkill ] [], Cmd.none )
 
 
 
