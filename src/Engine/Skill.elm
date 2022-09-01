@@ -1,10 +1,13 @@
 module Engine.Skill exposing
     ( Skill
+    , SkillEffect(..)
     , SkillState(..)
     , cooldownPercentage
     , isActive
     , isReady
-    , new
+    , newBuff
+    , newDebuff
+    , newHit
     , tick
     , use
     )
@@ -16,6 +19,7 @@ type alias Skill =
     , cooldownTime : Int
     , useTime : Int
     , state : SkillState
+    , effect : SkillEffect
     }
 
 
@@ -25,6 +29,12 @@ type SkillState
     | Active ( Int, Int )
 
 
+type SkillEffect
+    = Hit Int
+    | Buff Int
+    | Debuff Int
+
+
 {-| Create new skill
 
 cooldownTime is intended to be milliseconds
@@ -32,14 +42,48 @@ cooldownTime is intended to be milliseconds
 useTime is set to 100 ms for now
 
 -}
-new : String -> String -> Int -> Skill
-new name description cooldownTime =
+new : String -> String -> Int -> SkillEffect -> Skill
+new name description cooldownTime effect =
     Skill
         name
         description
         (max 0 cooldownTime)
         200
         (Cooling ( 0, max 0 cooldownTime ))
+        effect
+
+
+{-| Create new skill with hit effect
+-}
+newHit : String -> String -> Int -> Int -> Skill
+newHit name description cooldownTime power =
+    new
+        name
+        description
+        (max 0 cooldownTime)
+        (Hit power)
+
+
+{-| Create new skill with buff effect
+-}
+newBuff : String -> String -> Int -> Int -> Skill
+newBuff name description cooldownTime power =
+    new
+        name
+        description
+        (max 0 cooldownTime)
+        (Buff power)
+
+
+{-| Create new skill with debuff effect
+-}
+newDebuff : String -> String -> Int -> Int -> Skill
+newDebuff name description cooldownTime power =
+    new
+        name
+        description
+        (max 0 cooldownTime)
+        (Debuff power)
 
 
 {-| Set skill state to ready
