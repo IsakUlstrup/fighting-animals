@@ -123,11 +123,12 @@ skillInteractionTests =
                     |> Engine.Skill.isReady
                     |> Expect.equal
                         (randomInt >= 1000)
-        , fuzz int "Tick skill by random delta time, then attempt to use it" <|
+        , fuzz int "Tick skill by random delta time, then attempt to use it. Check is state is correct" <|
             \randomInt ->
                 Engine.Skill.newHit "Name" "Description" 1000 12
                     |> Engine.Skill.tick randomInt
                     |> Engine.Skill.use
+                    |> Tuple.first
                     |> .state
                     |> Expect.equal
                         (if randomInt >= 1000 then
@@ -135,6 +136,19 @@ skillInteractionTests =
 
                          else
                             Engine.Skill.Cooling ( clamp 0 1000 randomInt, 1000 )
+                        )
+        , fuzz int "Tick skill by random delta time, then attempt to use it. Check if Skill.use returns correct skill effect" <|
+            \randomInt ->
+                Engine.Skill.newHit "Name" "Description" 1000 12
+                    |> Engine.Skill.tick randomInt
+                    |> Engine.Skill.use
+                    |> Tuple.second
+                    |> Expect.equal
+                        (if randomInt >= 1000 then
+                            Just (Engine.Skill.Hit 12)
+
+                         else
+                            Nothing
                         )
         ]
 

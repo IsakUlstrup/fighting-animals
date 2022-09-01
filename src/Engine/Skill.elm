@@ -223,10 +223,10 @@ isActive skill =
 
 {-| Use skill if ready
 -}
-use : Skill -> Skill
+use : Skill -> ( Skill, Maybe SkillEffect )
 use skill =
     if isReady skill then
-        setActive skill
+        ( setActive skill, Just skill.effect )
 
     else
-        skill
+        ( skill, Nothing )
