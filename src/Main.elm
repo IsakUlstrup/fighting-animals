@@ -33,18 +33,20 @@ type Msg
     | UseSkill Int
 
 
-updateAtIndex : Int -> (Skill -> ( Skill, Maybe SkillEffect )) -> Int -> Skill -> ( Skill, Maybe SkillEffect )
-updateAtIndex target f index skill =
-    if index == target then
-        f skill
-
-    else
-        ( skill, Nothing )
-
-
-useSkill : Int -> List Skill -> ( List Skill, List (Maybe SkillEffect) )
+useSkill : Int -> List Skill -> ( List Skill, List SkillEffect )
 useSkill index skills =
-    List.indexedMap (updateAtIndex index Skill.use) skills |> List.unzip
+    let
+        useAtIndex : Int -> (Skill -> ( Skill, Maybe SkillEffect )) -> Int -> Skill -> ( Skill, Maybe SkillEffect )
+        useAtIndex target f i skill =
+            if i == target then
+                f skill
+
+            else
+                ( skill, Nothing )
+    in
+    List.indexedMap (useAtIndex index Skill.use) skills
+        |> List.unzip
+        |> Tuple.mapSecond (List.filterMap identity)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -58,7 +60,7 @@ update msg model =
                 ( skills, effects ) =
                     model.skills |> useSkill index
             in
-            ( { model | skills = skills, skillEffects = List.filterMap identity effects ++ model.skillEffects }, Cmd.none )
+            ( { model | skills = skills, skillEffects = effects ++ model.skillEffects }, Cmd.none )
 
 
 
