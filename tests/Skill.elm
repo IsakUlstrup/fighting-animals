@@ -171,6 +171,7 @@ skillViewtests =
         , test "Skill effect to string" <|
             \_ ->
                 Engine.Skill.newBuff "Name" "Description" 500 53
+                    |> .effect
                     |> Engine.Skill.effectToString
                     |> Expect.equal
                         "Buff 53"

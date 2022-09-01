@@ -178,9 +178,9 @@ cooldownPercentage skill =
 
 {-| Skill effect to string, for debug rendering
 -}
-effectToString : Skill -> String
-effectToString skill =
-    case skill.effect of
+effectToString : SkillEffect -> String
+effectToString effect =
+    case effect of
         Hit pwr ->
             "Hit " ++ String.fromInt pwr
 

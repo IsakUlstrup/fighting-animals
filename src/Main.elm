@@ -3,9 +3,9 @@ module Main exposing (Model, Msg, main)
 import Browser exposing (Document)
 import Browser.Events
 import Content.Skills as Skills
-import Element
+import Element exposing (Element)
 import Element.Background
-import Engine.Skill as Skill exposing (Skill)
+import Engine.Skill as Skill exposing (Skill, SkillEffect)
 import View.Experimental
 
 
@@ -14,12 +14,14 @@ import View.Experimental
 
 
 type alias Model =
-    List Skill
+    { skills : List Skill
+    , skillEffects : List SkillEffect
+    }
 
 
 init : () -> ( Model, Cmd msg )
 init _ =
-    ( [ Skills.basicSkill, Skills.slowSkill ], Cmd.none )
+    ( Model [ Skills.basicSkill, Skills.slowSkill ] [], Cmd.none )
 
 
 
@@ -31,32 +33,41 @@ type Msg
     | UseSkill Int
 
 
-updateAtIndex : Int -> (Skill -> Skill) -> Int -> Skill -> Skill
+updateAtIndex : Int -> (Skill -> ( Skill, Maybe SkillEffect )) -> Int -> Skill -> ( Skill, Maybe SkillEffect )
 updateAtIndex target f index skill =
     if index == target then
         f skill
 
     else
-        skill
+        ( skill, Nothing )
 
 
-useSkill : Int -> List Skill -> List Skill
-useSkill index =
-    List.indexedMap (updateAtIndex index (Skill.use >> Tuple.first))
+useSkill : Int -> List Skill -> ( List Skill, List (Maybe SkillEffect) )
+useSkill index skills =
+    List.indexedMap (updateAtIndex index Skill.use) skills |> List.unzip
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Tick dt ->
-            ( model |> List.map (Skill.tick dt), Cmd.none )
+            ( { model | skills = model.skills |> List.map (Skill.tick dt) }, Cmd.none )
 
         UseSkill index ->
-            ( model |> useSkill index, Cmd.none )
+            let
+                ( skills, effects ) =
+                    model.skills |> useSkill index
+            in
+            ( { model | skills = skills, skillEffects = List.filterMap identity effects ++ model.skillEffects }, Cmd.none )
 
 
 
 -- VIEW
+
+
+viewSkillEffect : SkillEffect -> Element msg
+viewSkillEffect effect =
+    Element.el [] (Element.text <| Skill.effectToString effect)
 
 
 view : Model -> Document Msg
@@ -75,8 +86,9 @@ view model =
                 }
             ]
             (Element.column [ Element.width (Element.fill |> Element.maximum 500), Element.height Element.fill, Element.centerX ]
-                [ Element.column [ Element.alignBottom, Element.width Element.fill, Element.spacing 15 ]
-                    (List.indexedMap (\i -> View.Experimental.viewSkillButton (UseSkill i)) model)
+                [ Element.column [] (List.map viewSkillEffect model.skillEffects)
+                , Element.column [ Element.alignBottom, Element.width Element.fill, Element.spacing 15 ]
+                    (List.indexedMap (\i -> View.Experimental.viewSkillButton (UseSkill i)) model.skills)
                 ]
             )
         ]
@@ -89,7 +101,7 @@ view model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    if List.all Skill.isReady model then
+    if List.all Skill.isReady model.skills then
         Sub.none
 
     else
