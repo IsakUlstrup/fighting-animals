@@ -42,7 +42,7 @@ updateAtIndex target f index skill =
 
 useSkill : Int -> List Skill -> List Skill
 useSkill index =
-    List.indexedMap (updateAtIndex index Skill.use)
+    List.indexedMap (updateAtIndex index (Skill.use >> Tuple.first))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
