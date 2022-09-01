@@ -1,4 +1,4 @@
-module Skill exposing (newSkillTests, skillInteractionTests)
+module Skill exposing (newSkillTests, skillInteractionTests, skillViewtests)
 
 import Engine.Skill
 import Expect
@@ -48,6 +48,17 @@ newSkillTests =
 
                          else
                             Engine.Skill.Cooling ( 0, randomInt )
+                        )
+        , fuzz int "new hit skill with random power, negative numbers should be clamped" <|
+            \randomInt ->
+                Engine.Skill.newHit "Name" "Description" 3050 randomInt
+                    |> .effect
+                    |> Expect.equal
+                        (if randomInt < 0 then
+                            Engine.Skill.Hit 0
+
+                         else
+                            Engine.Skill.Hit randomInt
                         )
         , test "new skill, state should be cooling" <|
             \_ ->
@@ -105,18 +116,6 @@ skillInteractionTests =
                     |> Engine.Skill.cooldownPercentage
                     |> Expect.equal
                         50
-        , fuzz2 int int "Tick skill by random delta time, then get cooldown progress" <|
-            \randomInt int2 ->
-                Engine.Skill.newBuff "Name" "Description" int2 53
-                    |> Engine.Skill.tick randomInt
-                    |> Engine.Skill.cooldownPercentage
-                    |> Expect.equal
-                        (if randomInt >= max 0 int2 then
-                            100
-
-                         else
-                            intPercentage randomInt int2
-                        )
         , fuzz int "Is skill ready?" <|
             \randomInt ->
                 Engine.Skill.newDebuff "Name" "Description" 1000 32
@@ -137,4 +136,28 @@ skillInteractionTests =
                          else
                             Engine.Skill.Cooling ( clamp 0 1000 randomInt, 1000 )
                         )
+        ]
+
+
+skillViewtests : Test
+skillViewtests =
+    describe "View helpers"
+        [ fuzz2 int int "Tick skill by random delta time, then get cooldown progress" <|
+            \randomInt int2 ->
+                Engine.Skill.newBuff "Name" "Description" int2 53
+                    |> Engine.Skill.tick randomInt
+                    |> Engine.Skill.cooldownPercentage
+                    |> Expect.equal
+                        (if randomInt >= max 0 int2 then
+                            100
+
+                         else
+                            intPercentage randomInt int2
+                        )
+        , test "Skill effect to string" <|
+            \_ ->
+                Engine.Skill.newBuff "Name" "Description" 500 53
+                    |> Engine.Skill.effectToString
+                    |> Expect.equal
+                        "Buff 53"
         ]

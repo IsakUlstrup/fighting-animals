@@ -3,6 +3,7 @@ module Engine.Skill exposing
     , SkillEffect(..)
     , SkillState(..)
     , cooldownPercentage
+    , effectToString
     , isActive
     , isReady
     , newBuff
@@ -61,7 +62,7 @@ newHit name description cooldownTime power =
         name
         description
         (max 0 cooldownTime)
-        (Hit power)
+        (Hit <| max 0 power)
 
 
 {-| Create new skill with buff effect
@@ -72,7 +73,7 @@ newBuff name description cooldownTime power =
         name
         description
         (max 0 cooldownTime)
-        (Buff power)
+        (Buff <| max 0 power)
 
 
 {-| Create new skill with debuff effect
@@ -83,7 +84,7 @@ newDebuff name description cooldownTime power =
         name
         description
         (max 0 cooldownTime)
-        (Debuff power)
+        (Debuff <| max 0 power)
 
 
 {-| Set skill state to ready
@@ -173,6 +174,21 @@ cooldownPercentage skill =
 
         Ready ->
             100
+
+
+{-| Skill effect to string, for debug rendering
+-}
+effectToString : Skill -> String
+effectToString skill =
+    case skill.effect of
+        Hit pwr ->
+            "Hit " ++ String.fromInt pwr
+
+        Buff pwr ->
+            "Buff " ++ String.fromInt pwr
+
+        Debuff pwr ->
+            "Debuff " ++ String.fromInt pwr
 
 
 {-| Is skill ready (off cooldown)?
