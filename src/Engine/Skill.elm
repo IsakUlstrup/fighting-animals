@@ -18,7 +18,6 @@ type alias Skill =
     { name : String
     , description : String
     , cooldownTime : Int
-    , useTime : Int
     , state : SkillState
     , effect : SkillEffect
     }
@@ -36,6 +35,13 @@ type SkillEffect
     | Debuff Int
 
 
+{-| Skill use time constant
+-}
+useTime : Int
+useTime =
+    500
+
+
 {-| Create new skill
 
 cooldownTime is intended to be milliseconds
@@ -49,7 +55,6 @@ new name description cooldownTime effect =
         name
         description
         (max 0 cooldownTime)
-        200
         (Cooling ( 0, max 0 cooldownTime ))
         effect
 
@@ -105,7 +110,7 @@ setCooling skill =
 -}
 setActive : Skill -> Skill
 setActive skill =
-    { skill | state = Active ( 0, skill.useTime ) }
+    { skill | state = Active ( 0, useTime ) }
 
 
 {-| tick skill state timers, does not advance state
