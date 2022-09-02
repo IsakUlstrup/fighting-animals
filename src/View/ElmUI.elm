@@ -1,4 +1,4 @@
-module View.Experimental exposing (viewSkillButton)
+module View.ElmUI exposing (viewSkillButton)
 
 import Element exposing (Attribute, Element, el, fill, pointer, px, rgb255, rgba255, scale, text)
 import Element.Background as Background

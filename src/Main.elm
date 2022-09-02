@@ -6,7 +6,7 @@ import Content.Skills as Skills
 import Element exposing (Element)
 import Element.Background
 import Engine.Skill as Skill exposing (Skill, SkillEffect)
-import View.Experimental
+import View.ElmUI
 
 
 
@@ -90,7 +90,7 @@ view model =
             (Element.column [ Element.width (Element.fill |> Element.maximum 500), Element.height Element.fill, Element.centerX ]
                 [ Element.column [] (List.map viewSkillEffect model.skillEffects)
                 , Element.column [ Element.alignBottom, Element.width Element.fill, Element.spacing 15 ]
-                    (List.indexedMap (\i -> View.Experimental.viewSkillButton (UseSkill i)) model.skills)
+                    (List.indexedMap (\i -> View.ElmUI.viewSkillButton (UseSkill i)) model.skills)
                 ]
             )
         ]
