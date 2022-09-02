@@ -9,6 +9,19 @@ import View.Svg
 
 viewSkillButton : msg -> Skill -> Html msg
 viewSkillButton clickMsg skill =
+    let
+        icon : Char
+        icon =
+            case skill.effect of
+                Skill.Hit _ ->
+                    '➹'
+
+                Skill.Buff _ ->
+                    '⬆'
+
+                Skill.Debuff _ ->
+                    '⬇'
+    in
     Html.button
         [ Html.Events.onClick clickMsg
         , class "skill-button"
@@ -22,8 +35,18 @@ viewSkillButton clickMsg skill =
 
                 Skill.Ready ->
                     "skill-ready"
+        , class <|
+            case skill.effect of
+                Skill.Hit _ ->
+                    "skill-hit"
+
+                Skill.Buff _ ->
+                    "skill-buff"
+
+                Skill.Debuff _ ->
+                    "skill-debuff"
         ]
-        [ View.Svg.viewSpinner (Skill.cooldownPercentage skill) '★'
+        [ View.Svg.viewSpinner (Skill.cooldownPercentage skill) icon
         , div [ class "skill-meta" ]
             [ h5 [] [ text skill.name ]
             , p [] [ text skill.description ]

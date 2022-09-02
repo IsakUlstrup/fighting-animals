@@ -30,6 +30,7 @@ viewSpinner percentage icon =
             , Svg.Attributes.dominantBaseline "middle"
             , Svg.Attributes.fill "#262626"
             , Svg.Attributes.fontFamily "sans-serif"
+            , Svg.Attributes.fontSize "18px"
             ]
             [ Svg.text <| String.fromChar icon ]
         ]
