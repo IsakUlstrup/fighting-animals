@@ -22,7 +22,11 @@ type alias Model =
 init : () -> ( Model, Cmd msg )
 init _ =
     ( Model
-        [ Skills.basicSkill, Skills.slowSkill, Skills.buffSkill ]
+        [ Skills.basicSkill
+        , Skills.debuffSkill
+        , Skills.slowSkill
+        , Skills.buffSkill
+        ]
         []
         "ElmHtml"
     , Cmd.none
