@@ -4,7 +4,6 @@ module Engine.Skill exposing
     , SkillState(..)
     , cooldownPercentage
     , effectToString
-    , isActive
     , isReady
     , newBuff
     , newDebuff
@@ -206,21 +205,6 @@ isReady skill =
 
         Active _ ->
             False
-
-        Cooling _ ->
-            False
-
-
-{-| Is skill active?
--}
-isActive : Skill -> Bool
-isActive skill =
-    case skill.state of
-        Ready ->
-            False
-
-        Active _ ->
-            True
 
         Cooling _ ->
             False

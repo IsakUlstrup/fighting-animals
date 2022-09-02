@@ -5,7 +5,6 @@ import Browser.Events
 import Content.Skills as Skills
 import Engine.Skill as Skill exposing (Skill, SkillEffect)
 import View.ElmHtml
-import View.ElmUI
 
 
 
@@ -15,20 +14,18 @@ import View.ElmUI
 type alias Model =
     { skills : List Skill
     , skillEffects : List SkillEffect
-    , renderer : String
     }
 
 
 init : () -> ( Model, Cmd msg )
 init _ =
     ( Model
-        [ Skills.basicSkill
-        , Skills.debuffSkill
+        [ Skills.debuffSkill
         , Skills.slowSkill
         , Skills.buffSkill
+        , Skills.basicSkill
         ]
         []
-        "ElmHtml"
     , Cmd.none
     )
 
@@ -80,16 +77,7 @@ view : Model -> Document Msg
 view model =
     { title = "Fighting Animals"
     , body =
-        [ case model.renderer of
-            "ElmUI" ->
-                View.ElmUI.view { skills = model.skills, skillEffects = model.skillEffects } UseSkill
-
-            "ElmHtml" ->
-                View.ElmHtml.view { skills = model.skills, skillEffects = model.skillEffects } UseSkill
-
-            _ ->
-                View.ElmUI.view { skills = model.skills, skillEffects = model.skillEffects } UseSkill
-        ]
+        [ View.ElmHtml.view { skills = model.skills, skillEffects = model.skillEffects } UseSkill ]
     }
 
 
