@@ -1,11 +1,12 @@
-module View.ElmUI exposing (viewSkillButton)
+module View.ElmUI exposing (view)
 
 import Element exposing (Attribute, Element, el, fill, pointer, px, rgb255, rgba255, scale, text)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events
 import Element.Font as Font
-import Engine.Skill as Skill exposing (Skill)
+import Engine.Skill as Skill exposing (Skill, SkillEffect)
+import Html exposing (Html)
 import View.Svg
 
 
@@ -74,3 +75,34 @@ viewSkillButton clickMsg skill =
                 (text skill.description)
             ]
         ]
+
+
+viewSkillEffect : SkillEffect -> Element msg
+viewSkillEffect effect =
+    Element.el [] (Element.text <| Skill.effectToString effect)
+
+
+view :
+    { skills : List Skill
+    , skillEffects : List SkillEffect
+    }
+    -> (Int -> msg)
+    -> Html msg
+view model useSkill =
+    Element.layout
+        [ Element.padding 30
+        , Background.gradient
+            { angle = 2.8
+            , steps =
+                [ Element.rgb255 204 149 192
+                , Element.rgb255 219 212 180
+                , Element.rgb255 122 161 210
+                ]
+            }
+        ]
+        (Element.column [ Element.width (Element.fill |> Element.maximum 500), Element.height Element.fill, Element.centerX ]
+            [ Element.column [] (List.map viewSkillEffect model.skillEffects)
+            , Element.column [ Element.alignBottom, Element.width Element.fill, Element.spacing 15 ]
+                (List.indexedMap (\i -> viewSkillButton (useSkill i)) model.skills)
+            ]
+        )

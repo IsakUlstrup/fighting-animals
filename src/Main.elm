@@ -3,9 +3,8 @@ module Main exposing (Model, Msg, main)
 import Browser exposing (Document)
 import Browser.Events
 import Content.Skills as Skills
-import Element exposing (Element)
-import Element.Background
 import Engine.Skill as Skill exposing (Skill, SkillEffect)
+import View.ElmHtml
 import View.ElmUI
 
 
@@ -16,12 +15,18 @@ import View.ElmUI
 type alias Model =
     { skills : List Skill
     , skillEffects : List SkillEffect
+    , renderer : String
     }
 
 
 init : () -> ( Model, Cmd msg )
 init _ =
-    ( Model [ Skills.basicSkill, Skills.slowSkill, Skills.buffSkill ] [], Cmd.none )
+    ( Model
+        [ Skills.basicSkill, Skills.slowSkill, Skills.buffSkill ]
+        []
+        "ElmUI"
+    , Cmd.none
+    )
 
 
 
@@ -67,32 +72,19 @@ update msg model =
 -- VIEW
 
 
-viewSkillEffect : SkillEffect -> Element msg
-viewSkillEffect effect =
-    Element.el [] (Element.text <| Skill.effectToString effect)
-
-
 view : Model -> Document Msg
 view model =
     { title = "Fighting Animals"
     , body =
-        [ Element.layout
-            [ Element.padding 30
-            , Element.Background.gradient
-                { angle = 2.8
-                , steps =
-                    [ Element.rgb255 204 149 192
-                    , Element.rgb255 219 212 180
-                    , Element.rgb255 122 161 210
-                    ]
-                }
-            ]
-            (Element.column [ Element.width (Element.fill |> Element.maximum 500), Element.height Element.fill, Element.centerX ]
-                [ Element.column [] (List.map viewSkillEffect model.skillEffects)
-                , Element.column [ Element.alignBottom, Element.width Element.fill, Element.spacing 15 ]
-                    (List.indexedMap (\i -> View.ElmUI.viewSkillButton (UseSkill i)) model.skills)
-                ]
-            )
+        [ case model.renderer of
+            "ElmUI" ->
+                View.ElmUI.view { skills = model.skills, skillEffects = model.skillEffects } UseSkill
+
+            "ElmHtml" ->
+                View.ElmHtml.view { skills = model.skills, skillEffects = model.skillEffects } UseSkill
+
+            _ ->
+                View.ElmUI.view { skills = model.skills, skillEffects = model.skillEffects } UseSkill
         ]
     }
 
