@@ -1,7 +1,24 @@
 
-$hit-skill-color: green
-$buff-skill-color: orange
-$debuff-skill-color: navy 
+$hit-skill-color: magenta
+$buff-skill-color: brown
+$debuff-skill-color: green 
+
+@keyframes small-pop
+    0%
+        transform: scale(1)
+    60%
+        transform: scale(1.05)
+    100%
+        transform: scale(1)
+
+@keyframes pop
+    0%
+        transform: scale(1)
+    60%
+        transform: scale(1.5)
+    100%
+        transform: scale(1)
+
 
 *
     padding: 0
@@ -46,6 +63,7 @@ $debuff-skill-color: navy
 
     &.skill-ready
         cursor: pointer
+        animation: small-pop 0.3s
 
     &.skill-active
         transform: scale(1.05)
@@ -90,7 +108,10 @@ $debuff-skill-color: navy
     display: block
     background: red
     border-radius: 9999rem
-    transition: opacity 0.3s
+    transition: opacity 0.3s, transform 0.3s
+
+    &.skill-ready
+        animation: pop 0.3s
 
     &.skill-hit
         background: $hit-skill-color
@@ -114,4 +135,4 @@ $debuff-skill-color: navy
         transform: scale(1.5)
 
     &.skill-cooling
-        opacity: 0.5
+        opacity: 0.2
