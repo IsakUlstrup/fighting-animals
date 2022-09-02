@@ -1,3 +1,8 @@
+
+$hit-skill-color: green
+$buff-skill-color: orange
+$debuff-skill-color: navy 
+
 *
     padding: 0
     margin: 0
@@ -19,7 +24,11 @@
     display: flex
     flex-direction: column
     gap: 0.7rem
-    
+
+.small-skill-buttons
+    display: flex
+    flex-direction: column
+    gap: 0.3rem
 
 .skill-button
     background: rgba(255, 255, 255, 0.8)
@@ -48,17 +57,17 @@
     &.skill-hit
         .radial-progress
             circle
-                stroke: green
+                stroke: $hit-skill-color
 
     &.skill-buff
         .radial-progress
             circle
-                stroke: orange
+                stroke: $buff-skill-color
 
     &.skill-debuff
         .radial-progress
             circle
-                stroke: navy
+                stroke: $debuff-skill-color
 
 
 .skill-meta
@@ -74,3 +83,35 @@
     p
         font-weight: lighter
         font-size: 12px
+
+.small-skill
+    width: 0.5rem
+    height: 0.5rem
+    display: block
+    background: red
+    border-radius: 9999rem
+    transition: opacity 0.3s
+
+    &.skill-hit
+        background: $hit-skill-color
+
+    &.skill-buff
+        background: $buff-skill-color
+
+    &.skill-debuff
+        background: $debuff-skill-color
+
+    &.skill-active.skill-hit
+        box-shadow: 0 0 0.3rem $hit-skill-color
+        transform: scale(1.5)
+
+    &.skill-active.skill-buff
+        box-shadow: 0 0 0.3rem $buff-skill-color
+        transform: scale(1.5)
+
+    &.skill-active.skill-debuff
+        box-shadow: 0 0 0.3rem $debuff-skill-color
+        transform: scale(1.5)
+
+    &.skill-cooling
+        opacity: 0.5

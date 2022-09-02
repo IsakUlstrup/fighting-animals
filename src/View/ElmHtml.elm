@@ -7,6 +7,34 @@ import Html.Events
 import View.Svg
 
 
+viewSmallSkill : Skill -> Html msg
+viewSmallSkill skill =
+    div
+        [ class "small-skill"
+        , class <|
+            case skill.state of
+                Skill.Cooling _ ->
+                    "skill-cooling"
+
+                Skill.Active _ ->
+                    "skill-active"
+
+                Skill.Ready ->
+                    "skill-ready"
+        , class <|
+            case skill.effect of
+                Skill.Hit _ ->
+                    "skill-hit"
+
+                Skill.Buff _ ->
+                    "skill-buff"
+
+                Skill.Debuff _ ->
+                    "skill-debuff"
+        ]
+        []
+
+
 viewSkillButton : msg -> Skill -> Html msg
 viewSkillButton clickMsg skill =
     let
@@ -68,5 +96,6 @@ view :
 view model useSkill =
     main_ [ id "app" ]
         [ div [ class "skill-effects" ] (List.map viewSkillEffect model.skillEffects)
+        , div [ class "small-skill-buttons" ] (List.map viewSmallSkill model.skills)
         , div [ class "skill-buttons" ] (List.indexedMap (\i -> viewSkillButton (useSkill i)) model.skills)
         ]
