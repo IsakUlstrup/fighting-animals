@@ -24,7 +24,7 @@ init _ =
     ( Model
         [ Skills.basicSkill, Skills.slowSkill, Skills.buffSkill ]
         []
-        "ElmUI"
+        "ElmHtml"
     , Cmd.none
     )
 

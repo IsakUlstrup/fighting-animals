@@ -7,7 +7,9 @@ import Svg.Attributes
 viewSpinner : Int -> Char -> Svg msg
 viewSpinner percentage icon =
     svg
-        [ Svg.Attributes.viewBox "-1 -1 34 34" ]
+        [ Svg.Attributes.viewBox "-1 -1 34 34"
+        , Svg.Attributes.class "radial-progress"
+        ]
         [ Svg.circle
             [ Svg.Attributes.stroke "magenta"
             , Svg.Attributes.fill "none"
