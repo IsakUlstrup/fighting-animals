@@ -78,7 +78,7 @@ update msg model =
                 ( skills, effects ) =
                     model.skills |> useSkill index
             in
-            ( { model | skills = skills, skillEffects = effects ++ model.skillEffects |> List.take 10 }, Cmd.none )
+            ( { model | skills = skills, skillEffects = effects ++ model.skillEffects |> List.take 50 }, Cmd.none )
 
         ShowQrModal ->
             ( { model
