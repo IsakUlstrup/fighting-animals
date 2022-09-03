@@ -1,7 +1,7 @@
 
-$hit-skill-color: magenta
-$buff-skill-color: brown
-$debuff-skill-color: green 
+$hit-skill-color: rgb(225, 33, 100)
+$buff-skill-color: rgb(19, 157, 162)
+$debuff-skill-color: rgb(243, 147, 29)
 
 @keyframes small-pop
     0%
@@ -34,7 +34,7 @@ button
     background: linear-gradient(to bottom, #cc95c0, #dbd4b4, #7aa1d2)
     color: white
     font-family: "Helvetica", sans-serif
-    padding: 1rem
+    padding: 6%
     display: flex
     gap: 4rem
     flex-direction: column
@@ -129,18 +129,18 @@ button
         animation: small-pop 0.3s
 
     &.skill-active
-        transform: scale(1.05)
+        transform: scale(1.02)
 
     &.skill-cooling
         opacity: 0.8
         box-shadow: 0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.1)
 
     &.skill-active.skill-hit
-        box-shadow: 0.1rem 0.1rem 0.3rem $hit-skill-color
+        box-shadow: 0rem 0rem 0.8rem transparentize($hit-skill-color, 0.7)
     &.skill-active.skill-buff
-        box-shadow: 0.1rem 0.1rem 0.3rem $buff-skill-color
+        box-shadow: 0rem 0rem 0.8rem transparentize($buff-skill-color, 0.7)
     &.skill-active.skill-debuff
-        box-shadow: 0.1rem 0.1rem 0.3rem $debuff-skill-color
+        box-shadow: 0rem 0rem 0.8rem transparentize($debuff-skill-color, 0.7)
 
 
     &.skill-hit

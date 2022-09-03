@@ -14,7 +14,7 @@ viewSpinner percentage icon =
             [ Svg.Attributes.stroke "magenta"
             , Svg.Attributes.fill "none"
             , Svg.Attributes.transform "rotate(90, 16, 16)"
-            , Svg.Attributes.strokeWidth "2"
+            , Svg.Attributes.strokeWidth "2.4"
             , Svg.Attributes.strokeLinecap "round"
             , Svg.Attributes.cx "16"
             , Svg.Attributes.cy "16"
