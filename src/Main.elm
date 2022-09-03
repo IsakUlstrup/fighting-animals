@@ -110,30 +110,25 @@ qrCodeView message =
 
 viewModal : ModalState -> Html Msg
 viewModal state =
-    case state of
-        Visible title content ->
-            Html.aside [ Html.Attributes.classList [ ( "modal", True ), ( "visible", True ) ] ]
-                [ Html.div [ Html.Attributes.class "modal-body" ]
-                    [ Html.div [ Html.Attributes.class "modal-header" ]
-                        [ Html.h5 [] [ Html.text title ]
-                        , Html.button [ Html.Events.onClick HideModal ] [ Html.text "Close" ]
-                        ]
-                    , Html.div [ Html.Attributes.class "modal-content" ] [ content ]
-                    ]
-                , Html.div [ Html.Attributes.class "modal-background", Html.Events.onClick HideModal ] []
-                ]
+    let
+        ( visible, title, content ) =
+            case state of
+                Visible t c ->
+                    ( True, t, c )
 
-        Hidden ->
-            Html.aside [ Html.Attributes.classList [ ( "modal", True ), ( "visible", False ) ] ]
-                [ Html.div [ Html.Attributes.class "modal-body" ]
-                    [ Html.div [ Html.Attributes.class "modal-header" ]
-                        [ Html.h5 [] [ Html.text "Modal header" ]
-                        , Html.button [ Html.Events.onClick HideModal ] [ Html.text "Close" ]
-                        ]
-                    , Html.div [ Html.Attributes.class "modal-content" ] [ Html.text "modal content" ]
-                    ]
-                , Html.div [ Html.Attributes.class "modal-background", Html.Events.onClick HideModal ] []
+                Hidden ->
+                    ( False, "title", Html.text "content" )
+    in
+    Html.aside [ Html.Attributes.classList [ ( "modal", True ), ( "visible", visible ) ] ]
+        [ Html.div [ Html.Attributes.class "modal-body" ]
+            [ Html.div [ Html.Attributes.class "modal-header" ]
+                [ Html.h5 [] [ Html.text title ]
+                , Html.button [ Html.Events.onClick HideModal ] [ Html.text "Close" ]
                 ]
+            , Html.div [ Html.Attributes.class "modal-content" ] [ content ]
+            ]
+        , Html.div [ Html.Attributes.class "modal-background", Html.Events.onClick HideModal ] []
+        ]
 
 
 view : Model -> Document Msg
