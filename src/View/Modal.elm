@@ -1,4 +1,4 @@
-module View.Modal exposing (Modal, hide, new, setContent, setTitle, show, viewModal)
+module View.Modal exposing (Modal, hide, new, show, viewModal)
 
 import Html exposing (Html)
 import Html.Attributes
@@ -17,24 +17,14 @@ new =
     Modal "Modal Title" (Html.text "modal content") False
 
 
-setContent : Html msg -> Modal msg -> Modal msg
-setContent content modal =
-    { modal | content = content }
-
-
-setTitle : String -> Modal msg -> Modal msg
-setTitle title modal =
-    { modal | title = title }
-
-
 hide : Modal msg -> Modal msg
 hide modal =
     { modal | visible = False }
 
 
-show : Modal msg -> Modal msg
-show modal =
-    { modal | visible = True }
+show : String -> Html msg -> Modal msg -> Modal msg
+show title content modal =
+    { modal | title = title, content = content, visible = True }
 
 
 viewModal : msg -> Modal msg -> Html msg

@@ -84,9 +84,7 @@ update msg model =
             ( { model
                 | modal =
                     model.modal
-                        |> View.Modal.setTitle "Link QR code"
-                        |> View.Modal.setContent (qrCodeView model.pageUrl)
-                        |> View.Modal.show
+                        |> View.Modal.show "Link QR code" (qrCodeView model.pageUrl)
               }
             , Cmd.none
             )
