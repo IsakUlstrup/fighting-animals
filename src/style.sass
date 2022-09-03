@@ -59,6 +59,7 @@ button
     align-items: center
     justify-content: center
     opacity: 0
+    transition: opacity 0.3s
     pointer-events: none
 
     &.visible
@@ -79,11 +80,15 @@ button
         border-bottom: 1px solid rgba(0, 0, 0, 0.1)
         background: rgb(163, 237, 245)
         gap: 1rem
-        padding: 1rem
+        // padding: 1rem
         h5
             flex: auto
+            padding: 1rem
         button
-            padding: 0.3rem
+            padding: 0.7rem
+            background: none
+            border: none
+            cursor: pointer
 
     .modal-body
         background: white
