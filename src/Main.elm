@@ -1,4 +1,4 @@
-module Main exposing (ModalState, Model, Msg, main)
+module Main exposing (Model, Msg, main)
 
 import Browser exposing (Document)
 import Browser.Events
@@ -10,21 +10,17 @@ import Html.Events
 import QRCode
 import Svg.Attributes as SvgA
 import View.ElmHtml
+import View.Modal exposing (Modal)
 
 
 
 -- MODEL
 
 
-type ModalState
-    = Visible String (Html Msg)
-    | Hidden
-
-
 type alias Model =
     { skills : List Skill
     , skillEffects : List SkillEffect
-    , modal : ModalState
+    , modal : Modal Msg
     , pageUrl : String
     }
 
@@ -38,7 +34,7 @@ init pageUrl =
         , Skills.basicSkill
         ]
         []
-        Hidden
+        View.Modal.new
         pageUrl
     , Cmd.none
     )
@@ -85,10 +81,18 @@ update msg model =
             ( { model | skills = skills, skillEffects = effects ++ model.skillEffects |> List.take 10 }, Cmd.none )
 
         ShowQrModal ->
-            ( { model | modal = Visible "QR Code" (qrCodeView model.pageUrl) }, Cmd.none )
+            ( { model
+                | modal =
+                    model.modal
+                        |> View.Modal.setTitle "Link QR code"
+                        |> View.Modal.setContent (qrCodeView model.pageUrl)
+                        |> View.Modal.show
+              }
+            , Cmd.none
+            )
 
         HideModal ->
-            ( { model | modal = Hidden }, Cmd.none )
+            ( { model | modal = View.Modal.hide model.modal }, Cmd.none )
 
 
 
@@ -108,34 +112,11 @@ qrCodeView message =
         |> Result.withDefault (Html.text "Error while encoding to QRCode.")
 
 
-viewModal : ModalState -> Html Msg
-viewModal state =
-    let
-        ( visible, title, content ) =
-            case state of
-                Visible t c ->
-                    ( True, t, c )
-
-                Hidden ->
-                    ( False, "title", Html.text "content" )
-    in
-    Html.aside [ Html.Attributes.classList [ ( "modal", True ), ( "visible", visible ) ] ]
-        [ Html.div [ Html.Attributes.class "modal-body" ]
-            [ Html.div [ Html.Attributes.class "modal-header" ]
-                [ Html.h5 [] [ Html.text title ]
-                , Html.button [ Html.Events.onClick HideModal ] [ Html.text "Close" ]
-                ]
-            , Html.div [ Html.Attributes.class "modal-content" ] [ content ]
-            ]
-        , Html.div [ Html.Attributes.class "modal-background", Html.Events.onClick HideModal ] []
-        ]
-
-
 view : Model -> Document Msg
 view model =
     { title = "Fighting Animals"
     , body =
-        [ viewModal model.modal
+        [ View.Modal.viewModal HideModal model.modal
         , Html.button [ Html.Attributes.class "show-qr-button", Html.Events.onClick ShowQrModal ] [ Html.text "qr" ]
         , View.ElmHtml.view { skills = model.skills, skillEffects = model.skillEffects } UseSkill
         ]
