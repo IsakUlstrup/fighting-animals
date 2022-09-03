@@ -25,13 +25,18 @@ $debuff-skill-color: rgb(243, 147, 29)
     margin: 0
     box-sizing: border-box
 
+body
+    background: #cc95c0
+    background: linear-gradient(-12deg, #cc95c0, #dbd4b4, #7aa1d2)
+
+
 button
     color: #262626
 
 #app
     height: 100vh
-    background: #cc95c0
-    background: linear-gradient(-12deg, #cc95c0, #dbd4b4, #7aa1d2)
+    max-width: 600px
+    margin: 0 auto
     color: white
     font-family: "Helvetica", sans-serif
     padding: 6%
@@ -181,8 +186,8 @@ button
     border-radius: 9999rem
     transition: opacity 0.3s, transform 0.3s
 
-    &.skill-ready
-        animation: pop 0.3s
+    // &.skill-ready
+    //     animation: pop 0.3s
 
     &.skill-hit
         background: $hit-skill-color
