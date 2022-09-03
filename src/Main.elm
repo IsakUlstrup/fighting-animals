@@ -23,11 +23,12 @@ type alias Model =
     { skills : List Skill
     , skillEffects : List SkillEffect
     , modal : ModalState
+    , pageUrl : String
     }
 
 
-init : () -> ( Model, Cmd msg )
-init _ =
+init : String -> ( Model, Cmd msg )
+init pageUrl =
     ( Model
         [ Skills.debuffSkill
         , Skills.slowSkill
@@ -36,6 +37,7 @@ init _ =
         ]
         []
         Hidden
+        pageUrl
     , Cmd.none
     )
 
@@ -81,7 +83,7 @@ update msg model =
             ( { model | skills = skills, skillEffects = effects ++ model.skillEffects |> List.take 10 }, Cmd.none )
 
         ShowQrModal ->
-            ( { model | modal = Visible "QR Code" (Html.text "code here") }, Cmd.none )
+            ( { model | modal = Visible "QR Code" (Html.text model.pageUrl) }, Cmd.none )
 
         HideModal ->
             ( { model | modal = Hidden }, Cmd.none )
@@ -147,7 +149,7 @@ subscriptions model =
 -- MAIN
 
 
-main : Program () Model Msg
+main : Program String Model Msg
 main =
     Browser.document
         { init = init
