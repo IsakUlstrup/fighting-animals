@@ -47,7 +47,7 @@ init _ =
 type Msg
     = Tick Int
     | UseSkill Int
-    | ShowModal
+    | ShowQrModal
     | HideModal
 
 
@@ -80,8 +80,8 @@ update msg model =
             in
             ( { model | skills = skills, skillEffects = effects ++ model.skillEffects |> List.take 10 }, Cmd.none )
 
-        ShowModal ->
-            ( { model | modal = Visible "Test" (Html.text "hei") }, Cmd.none )
+        ShowQrModal ->
+            ( { model | modal = Visible "QR Code" (Html.text "code here") }, Cmd.none )
 
         HideModal ->
             ( { model | modal = Hidden }, Cmd.none )
@@ -124,7 +124,7 @@ view model =
     { title = "Fighting Animals"
     , body =
         [ viewModal model.modal
-        , Html.button [ Html.Attributes.class "show-qr-button", Html.Events.onClick ShowModal ] [ Html.text "qr" ]
+        , Html.button [ Html.Attributes.class "show-qr-button", Html.Events.onClick ShowQrModal ] [ Html.text "qr" ]
         , View.ElmHtml.view { skills = model.skills, skillEffects = model.skillEffects } UseSkill
         ]
     }
