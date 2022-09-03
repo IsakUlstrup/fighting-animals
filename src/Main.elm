@@ -1,9 +1,12 @@
-module Main exposing (Model, Msg, main)
+module Main exposing (ModalState, Model, Msg, main)
 
 import Browser exposing (Document)
 import Browser.Events
 import Content.Skills as Skills
 import Engine.Skill as Skill exposing (Skill, SkillEffect)
+import Html exposing (Html)
+import Html.Attributes
+import Html.Events
 import View.ElmHtml
 
 
@@ -11,9 +14,15 @@ import View.ElmHtml
 -- MODEL
 
 
+type ModalState
+    = Visible String (Html Msg)
+    | Hidden
+
+
 type alias Model =
     { skills : List Skill
     , skillEffects : List SkillEffect
+    , modal : ModalState
     }
 
 
@@ -26,6 +35,7 @@ init _ =
         , Skills.basicSkill
         ]
         []
+        Hidden
     , Cmd.none
     )
 
@@ -37,6 +47,8 @@ init _ =
 type Msg
     = Tick Int
     | UseSkill Int
+    | ShowModal
+    | HideModal
 
 
 useSkill : Int -> List Skill -> ( List Skill, List SkillEffect )
@@ -68,16 +80,53 @@ update msg model =
             in
             ( { model | skills = skills, skillEffects = effects ++ model.skillEffects |> List.take 10 }, Cmd.none )
 
+        ShowModal ->
+            ( { model | modal = Visible "Test" (Html.text "hei") }, Cmd.none )
+
+        HideModal ->
+            ( { model | modal = Hidden }, Cmd.none )
+
 
 
 -- VIEW
+
+
+viewModal : ModalState -> Html Msg
+viewModal state =
+    case state of
+        Visible title content ->
+            Html.aside [ Html.Attributes.classList [ ( "modal", True ), ( "visible", True ) ] ]
+                [ Html.div [ Html.Attributes.class "modal-body" ]
+                    [ Html.div [ Html.Attributes.class "modal-header" ]
+                        [ Html.h5 [] [ Html.text title ]
+                        , Html.button [ Html.Events.onClick HideModal ] [ Html.text "Close" ]
+                        ]
+                    , Html.div [ Html.Attributes.class "modal-content" ] [ content ]
+                    ]
+                , Html.div [ Html.Attributes.class "modal-background", Html.Events.onClick HideModal ] []
+                ]
+
+        Hidden ->
+            Html.aside [ Html.Attributes.classList [ ( "modal", True ), ( "visible", False ) ] ]
+                [ Html.div [ Html.Attributes.class "modal-body" ]
+                    [ Html.div [ Html.Attributes.class "modal-header" ]
+                        [ Html.h5 [] [ Html.text "Modal header" ]
+                        , Html.button [ Html.Events.onClick HideModal ] [ Html.text "Close" ]
+                        ]
+                    , Html.div [ Html.Attributes.class "modal-content" ] [ Html.text "modal content" ]
+                    ]
+                , Html.div [ Html.Attributes.class "modal-background", Html.Events.onClick HideModal ] []
+                ]
 
 
 view : Model -> Document Msg
 view model =
     { title = "Fighting Animals"
     , body =
-        [ View.ElmHtml.view { skills = model.skills, skillEffects = model.skillEffects } UseSkill ]
+        [ viewModal model.modal
+        , Html.button [ Html.Attributes.class "show-qr-button", Html.Events.onClick ShowModal ] [ Html.text "qr" ]
+        , View.ElmHtml.view { skills = model.skills, skillEffects = model.skillEffects } UseSkill
+        ]
     }
 
 
