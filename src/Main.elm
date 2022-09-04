@@ -123,7 +123,7 @@ qrCodeView message =
 viewDebugBar : Html Msg
 viewDebugBar =
     Html.div [ Html.Attributes.class "debug-bar" ]
-        [ Html.button [ Html.Events.onClick ShowQrModal ] [ Html.text "qr" ]
+        [ Html.button [ Html.Events.onClick ShowQrModal ] [ Html.text "share" ]
         , Html.button [ Html.Events.onClick ShowCombatLog ] [ Html.text "log" ]
         ]
 
