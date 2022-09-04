@@ -134,7 +134,7 @@ view model =
     , body =
         [ View.Modal.viewModal HideModal model.modal
         , viewDebugBar
-        , View.ElmHtml.view { skills = model.skills, skillEffects = model.combatLog } UseSkill
+        , View.ElmHtml.view model.skills UseSkill
         ]
     }
 
