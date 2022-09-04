@@ -33,7 +33,7 @@ viewModal hideMsg modal =
         [ Html.div [ Html.Attributes.class "modal-body" ]
             [ Html.div [ Html.Attributes.class "modal-header" ]
                 [ Html.h5 [] [ Html.text modal.title ]
-                , Html.button [ Html.Events.onClick hideMsg ] [ Html.text "Close" ]
+                , Html.button [ Html.Events.onClick hideMsg ] [ Html.text "X" ]
                 ]
             , Html.div [ Html.Attributes.class "modal-content" ] [ modal.content ]
             ]
