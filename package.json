@@ -7,5 +7,9 @@
     "@parcel/transformer-elm": "2.7.0",
     "elm-hot": "1.1.6",
     "node-elm-compiler": "5.0.6"
+  },
+  "scripts": {
+    "dev": "parcel public/index.html",
+    "build": "parcel build public/index.html"
   }
 }
