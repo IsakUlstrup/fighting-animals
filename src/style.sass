@@ -2,20 +2,13 @@
 $hit-skill-color: rgb(225, 33, 100)
 $buff-skill-color: rgb(19, 157, 162)
 $debuff-skill-color: rgb(243, 147, 29)
+$panel-color: rgb(255, 253, 242)
 
 @keyframes small-pop
     0%
         transform: scale(1)
     60%
         transform: scale(1.02)
-    100%
-        transform: scale(1)
-
-@keyframes pop
-    0%
-        transform: scale(1)
-    60%
-        transform: scale(1.5)
     100%
         transform: scale(1)
 
@@ -35,7 +28,7 @@ button
     height: 100vh
     max-width: 600px
     margin: 0 auto
-    color: white
+    color: $panel-color
     font-family: "Helvetica", sans-serif
     padding: 6%
     display: flex
@@ -89,8 +82,8 @@ button
         border-bottom: 1px solid rgba(0, 0, 0, 0.1)
         background: rgb(43, 43, 43)
         gap: 1rem
-        padding: 0.5rem 1rem
-        color: white
+        padding: 0.3rem 0.8rem
+        color: $panel-color
         border-radius: 1rem 1rem 0 0
         h5
             flex: auto
@@ -109,7 +102,7 @@ button
     .modal-body
         border-radius: 1rem
         z-index: 2
-        background: white
+        background: $panel-color
         border-radius: 2rem 2rem 1rem 1rem
 
     .modal-content
