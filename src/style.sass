@@ -19,7 +19,6 @@ $debuff-skill-color: rgb(243, 147, 29)
     100%
         transform: scale(1)
 
-
 *
     padding: 0
     margin: 0
@@ -28,7 +27,6 @@ $debuff-skill-color: rgb(243, 147, 29)
 body
     background: #cc95c0
     background: linear-gradient(-12deg, #cc95c0, #dbd4b4, #7aa1d2)
-
 
 button
     color: #262626
@@ -45,12 +43,11 @@ button
     flex-direction: column
     justify-content: flex-end
 
-.show-qr-button
-    position: absolute
-    padding: 0.7rem
-    border: 0
-    background: none
-
+.debug-bar
+    position: fixed
+    top: 0
+    left: 0
+    display: flex
 
 .modal
     font-family: "Helvetica", sans-serif
@@ -100,7 +97,7 @@ button
         overflow: hidden
         border-radius: 1rem
         z-index: 2
-    
+
     .modal-content
         padding: 1rem
 
@@ -136,7 +133,7 @@ button
     transition: opacity 0.3s, transform 0.3s, box-shadow 0.3s
 
     .radial-progress
-        flex: 2.5rem 0 0    
+        flex: 2.5rem 0 0
 
     &.skill-ready
         cursor: pointer
@@ -156,7 +153,6 @@ button
     &.skill-active.skill-debuff
         box-shadow: 0rem 0rem 1rem transparentize($debuff-skill-color, 0.35)
 
-
     &.skill-hit
         .radial-progress
             circle
@@ -171,7 +167,6 @@ button
         .radial-progress
             circle
                 stroke: $debuff-skill-color
-
 
 .skill-meta
     display: flex

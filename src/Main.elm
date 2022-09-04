@@ -19,7 +19,7 @@ import View.Modal exposing (Modal)
 
 type alias Model =
     { skills : List Skill
-    , skillEffects : List SkillEffect
+    , combatLog : List SkillEffect
     , modal : Modal Msg
     , pageUrl : String
     }
@@ -48,6 +48,7 @@ type Msg
     = Tick Int
     | UseSkill Int
     | ShowQrModal
+    | ShowCombatLog
     | HideModal
 
 
@@ -78,13 +79,22 @@ update msg model =
                 ( skills, effects ) =
                     model.skills |> useSkill index
             in
-            ( { model | skills = skills, skillEffects = effects ++ model.skillEffects |> List.take 50 }, Cmd.none )
+            ( { model | skills = skills, combatLog = effects ++ model.combatLog |> List.take 50 }, Cmd.none )
 
         ShowQrModal ->
             ( { model
                 | modal =
                     model.modal
                         |> View.Modal.show "Link QR code" (qrCodeView model.pageUrl)
+              }
+            , Cmd.none
+            )
+
+        ShowCombatLog ->
+            ( { model
+                | modal =
+                    model.modal
+                        |> View.Modal.show "Combat Log" (View.ElmHtml.viewCombatLog model.combatLog)
               }
             , Cmd.none
             )
@@ -110,13 +120,21 @@ qrCodeView message =
         |> Result.withDefault (Html.text "Error while encoding to QRCode.")
 
 
+viewDebugBar : Html Msg
+viewDebugBar =
+    Html.div [ Html.Attributes.class "debug-bar" ]
+        [ Html.button [ Html.Events.onClick ShowQrModal ] [ Html.text "qr" ]
+        , Html.button [ Html.Events.onClick ShowCombatLog ] [ Html.text "log" ]
+        ]
+
+
 view : Model -> Document Msg
 view model =
     { title = "Fighting Animals"
     , body =
         [ View.Modal.viewModal HideModal model.modal
-        , Html.button [ Html.Attributes.class "show-qr-button", Html.Events.onClick ShowQrModal ] [ Html.text "qr" ]
-        , View.ElmHtml.view { skills = model.skills, skillEffects = model.skillEffects } UseSkill
+        , viewDebugBar
+        , View.ElmHtml.view { skills = model.skills, skillEffects = model.combatLog } UseSkill
         ]
     }
 

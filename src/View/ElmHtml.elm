@@ -1,7 +1,7 @@
-module View.ElmHtml exposing (view)
+module View.ElmHtml exposing (view, viewCombatLog)
 
 import Engine.Skill as Skill exposing (Skill, SkillEffect)
-import Html exposing (Attribute, Html, div, h5, main_, p, text)
+import Html exposing (Attribute, Html, div, h5, li, main_, p, text, ul)
 import Html.Attributes exposing (class, id)
 import Html.Events
 import View.Svg
@@ -76,7 +76,12 @@ viewSkillButton clickMsg skill =
 
 viewSkillEffect : SkillEffect -> Html msg
 viewSkillEffect effect =
-    p [] [ text <| Skill.effectToString effect ]
+    li [] [ text <| Skill.effectToString effect ]
+
+
+viewCombatLog : List SkillEffect -> Html msg
+viewCombatLog skillEffects =
+    ul [ class "combat-log" ] (List.map viewSkillEffect skillEffects)
 
 
 view :
@@ -87,7 +92,6 @@ view :
     -> Html msg
 view model useSkill =
     main_ [ id "app" ]
-        [ div [ class "skill-effects" ] (List.map viewSkillEffect model.skillEffects)
-        , div [ class "small-skill-buttons" ] (List.map viewSmallSkill model.skills)
+        [ div [ class "small-skill-buttons" ] (List.map viewSmallSkill model.skills)
         , div [ class "skill-buttons" ] (List.indexedMap (\i -> viewSkillButton (useSkill i)) model.skills)
         ]
