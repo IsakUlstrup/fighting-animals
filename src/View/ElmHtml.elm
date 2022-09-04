@@ -4,6 +4,7 @@ import Engine.Skill as Skill exposing (Skill, SkillEffect)
 import Html exposing (Attribute, Html, div, h5, li, main_, p, text, ul)
 import Html.Attributes exposing (class, id)
 import Html.Events
+import Svg exposing (Svg)
 import View.Svg
 
 
@@ -48,17 +49,17 @@ viewSmallSkill skill =
 viewSkillButton : msg -> Skill -> Html msg
 viewSkillButton clickMsg skill =
     let
-        icon : Char
+        icon : Svg msg
         icon =
             case skill.effect of
                 Skill.Hit _ ->
-                    '➹'
+                    View.Svg.fist
 
                 Skill.Buff _ ->
-                    '⬆'
+                    View.Svg.arrowUp
 
                 Skill.Debuff _ ->
-                    '⬇'
+                    View.Svg.arrowDown
     in
     Html.button
         [ Html.Events.onClick clickMsg
