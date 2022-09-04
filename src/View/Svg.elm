@@ -39,6 +39,8 @@ viewSpinner percentage icon =
             ]
             []
         , Svg.g
-            [ Svg.Attributes.transform "translate(6, 6)" ]
+            [ Svg.Attributes.transform "translate(6, 6)"
+            , Svg.Attributes.class "radial-progress-icon"
+            ]
             [ icon ]
         ]
