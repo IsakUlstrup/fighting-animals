@@ -41,7 +41,7 @@ type SkillEffect
 -}
 useTime : Int
 useTime =
-    500
+    200
 
 
 {-| Create new skill
