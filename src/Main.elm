@@ -18,6 +18,7 @@ import View.Svg
 
 type alias Model =
     { skills : List Skill
+    , enemySkills : List Skill
     , combatLog : List SkillEffect
     , modal : Modal Msg
     , pageUrl : String
@@ -28,9 +29,11 @@ init : String -> ( Model, Cmd msg )
 init pageUrl =
     ( Model
         [ Skills.debuffSkill
-        , Skills.slowSkill
         , Skills.buffSkill
         , Skills.basicSkill
+        ]
+        [ Skills.basicSkill
+        , Skills.slowSkill
         ]
         []
         View.Modal.new
@@ -58,8 +61,17 @@ update msg model =
             let
                 ( skills, effects ) =
                     model.skills |> Skill.tickList dt
+
+                ( enemySkills, enemyEffects ) =
+                    model.enemySkills |> Skill.tickList dt
             in
-            ( { model | skills = skills, combatLog = effects ++ model.combatLog |> List.take 50 }, Cmd.none )
+            ( { model
+                | skills = skills
+                , enemySkills = enemySkills |> List.map Skill.use
+                , combatLog = effects ++ enemyEffects ++ model.combatLog |> List.take 50
+              }
+            , Cmd.none
+            )
 
         UseSkill index ->
             ( { model | skills = model.skills |> Skill.useAtIndex index }, Cmd.none )
@@ -104,7 +116,7 @@ view model =
     , body =
         [ View.Modal.viewModal HideModal model.modal
         , viewDebugBar model.combatLog
-        , View.ElmHtml.view model.skills UseSkill
+        , View.ElmHtml.view model.skills model.enemySkills UseSkill
         ]
     }
 
@@ -115,7 +127,7 @@ view model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    if List.all Skill.isReady model.skills then
+    if List.all Skill.isReady model.skills && List.all Skill.isReady model.enemySkills then
         Sub.none
 
     else
