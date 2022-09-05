@@ -90,11 +90,11 @@ update msg model =
 -- VIEW
 
 
-viewDebugBar : Html Msg
-viewDebugBar =
+viewDebugBar : List SkillEffect -> Html Msg
+viewDebugBar combatLog =
     Html.div [ Html.Attributes.class "debug-bar" ]
         [ Html.button [ Html.Events.onClick ShowQrModal ] [ Html.text "share" ]
-        , Html.button [ Html.Events.onClick ShowCombatLog ] [ Html.text "log" ]
+        , Html.button [ Html.Events.onClick ShowCombatLog ] [ Html.text ("log (" ++ (String.fromInt <| List.length combatLog) ++ ")") ]
         ]
 
 
@@ -103,7 +103,7 @@ view model =
     { title = "Fighting Animals"
     , body =
         [ View.Modal.viewModal HideModal model.modal
-        , viewDebugBar
+        , viewDebugBar model.combatLog
         , View.ElmHtml.view model.skills UseSkill
         ]
     }
