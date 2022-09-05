@@ -1,4 +1,4 @@
-module Skill exposing (newSkillTests, skillInteractionTests, skillViewtests)
+module Skill exposing (newSkillTests, skillInteractionTests, skillListTests, skillViewtests)
 
 import Engine.Skill
 import Expect
@@ -183,4 +183,56 @@ skillViewtests =
                     |> Engine.Skill.effectToString
                     |> Expect.equal
                         "Buff 53"
+        ]
+
+
+skillListTests : Test
+skillListTests =
+    describe "Skill lists"
+        [ test "Use skill at index 1 in a list of ready skills" <|
+            \_ ->
+                [ Engine.Skill.newHit "Hit" "Description" 500 53
+                , Engine.Skill.newBuff "Buff" "Description" 500 10
+                , Engine.Skill.newDebuff "Debuff" "Description" 500 5
+                ]
+                    |> Engine.Skill.tickList 500
+                    |> Tuple.first
+                    |> Engine.Skill.useAtIndex 1
+                    |> List.map .state
+                    |> Expect.equal
+                        [ Engine.Skill.Ready
+                        , Engine.Skill.Active ( 0, Engine.Skill.useTime )
+                        , Engine.Skill.Ready
+                        ]
+        , test "Use skill at index 5 (out of bounds) in a list of ready skills, should return unchanged list" <|
+            \_ ->
+                [ Engine.Skill.newHit "Hit" "Description" 500 53
+                , Engine.Skill.newBuff "Buff" "Description" 500 10
+                , Engine.Skill.newDebuff "Debuff" "Description" 500 5
+                ]
+                    |> Engine.Skill.tickList 500
+                    |> Tuple.first
+                    |> Engine.Skill.useAtIndex 5
+                    |> List.map .state
+                    |> Expect.equal
+                        [ Engine.Skill.Ready
+                        , Engine.Skill.Ready
+                        , Engine.Skill.Ready
+                        ]
+        , test "Tick a list of active skills, check returned skill effects" <|
+            \_ ->
+                [ Engine.Skill.newHit "Hit" "Description" 500 53
+                , Engine.Skill.newBuff "Buff" "Description" 500 10
+                , Engine.Skill.newDebuff "Debuff" "Description" 500 5
+                ]
+                    |> Engine.Skill.tickList 500
+                    |> Tuple.first
+                    |> Engine.Skill.useAtIndex 0
+                    |> Engine.Skill.useAtIndex 1
+                    |> Engine.Skill.tickList Engine.Skill.useTime
+                    |> Tuple.second
+                    |> Expect.equal
+                        [ Engine.Skill.Hit 53
+                        , Engine.Skill.Buff 10
+                        ]
         ]

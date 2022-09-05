@@ -52,39 +52,18 @@ type Msg
     | HideModal
 
 
-useSkill : Int -> List Skill -> List Skill
-useSkill index skills =
-    let
-        useAtIndex : Int -> (Skill -> Skill) -> Int -> Skill -> Skill
-        useAtIndex target f i skill =
-            if i == target then
-                f skill
-
-            else
-                skill
-    in
-    List.indexedMap (useAtIndex index Skill.use) skills
-
-
-tickSkills : Int -> List Skill -> ( List Skill, List SkillEffect )
-tickSkills dt skills =
-    List.map (Skill.tick dt) skills
-        |> List.unzip
-        |> Tuple.mapSecond (List.filterMap identity)
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Tick dt ->
             let
                 ( skills, effects ) =
-                    model.skills |> tickSkills dt
+                    model.skills |> Skill.tickList dt
             in
             ( { model | skills = skills, combatLog = effects ++ model.combatLog |> List.take 50 }, Cmd.none )
 
         UseSkill index ->
-            ( { model | skills = model.skills |> useSkill index }, Cmd.none )
+            ( { model | skills = model.skills |> Skill.useAtIndex index }, Cmd.none )
 
         ShowQrModal ->
             ( { model
