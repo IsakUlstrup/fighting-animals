@@ -78,10 +78,11 @@ newSkillTests =
 skillInteractionTests : Test
 skillInteractionTests =
     describe "Skill interaction"
-        [ fuzz int "Tick skill by random delta time" <|
+        [ fuzz int "Tick skill by random delta time, verify skill state" <|
             \randomInt ->
                 Engine.Skill.newBuff "Name" "Description" 1000 25
                     |> Engine.Skill.tick randomInt
+                    |> Tuple.first
                     |> .state
                     |> Expect.equal
                         (if randomInt < 0 then
@@ -93,11 +94,28 @@ skillInteractionTests =
                          else
                             Engine.Skill.Cooling ( randomInt, 1000 )
                         )
+        , fuzz int "Tick active skill by random delta time, verify skill effect" <|
+            \randomInt ->
+                Engine.Skill.newBuff "Name" "Description" 1000 25
+                    |> Engine.Skill.tick 1000
+                    |> Tuple.first
+                    |> Engine.Skill.use
+                    |> Engine.Skill.tick randomInt
+                    |> Tuple.second
+                    |> Expect.equal
+                        (if randomInt > 400 then
+                            Just <| Engine.Skill.Buff 25
+
+                         else
+                            Nothing
+                        )
         , fuzz2 int int "Tick skill by random delta time twice" <|
             \randomInt1 randomInt2 ->
                 Engine.Skill.newDebuff "Name" "Description" 1000 3
                     |> Engine.Skill.tick randomInt1
+                    |> Tuple.first
                     |> Engine.Skill.tick randomInt2
+                    |> Tuple.first
                     |> .state
                     |> Expect.equal
                         (if clamp 0 1000 randomInt1 + clamp 0 1000 randomInt2 < 0 then
@@ -113,6 +131,7 @@ skillInteractionTests =
             \_ ->
                 Engine.Skill.newHit "Name" "Description" 1000 200
                     |> Engine.Skill.tick 500
+                    |> Tuple.first
                     |> Engine.Skill.cooldownPercentage
                     |> Expect.equal
                         50
@@ -120,6 +139,7 @@ skillInteractionTests =
             \randomInt ->
                 Engine.Skill.newDebuff "Name" "Description" 1000 32
                     |> Engine.Skill.tick randomInt
+                    |> Tuple.first
                     |> Engine.Skill.isReady
                     |> Expect.equal
                         (randomInt >= 1000)
@@ -127,8 +147,8 @@ skillInteractionTests =
             \randomInt ->
                 Engine.Skill.newHit "Name" "Description" 1000 12
                     |> Engine.Skill.tick randomInt
-                    |> Engine.Skill.use
                     |> Tuple.first
+                    |> Engine.Skill.use
                     |> .state
                     |> Expect.equal
                         (if randomInt >= 1000 then
@@ -136,19 +156,6 @@ skillInteractionTests =
 
                          else
                             Engine.Skill.Cooling ( clamp 0 1000 randomInt, 1000 )
-                        )
-        , fuzz int "Tick skill by random delta time, then attempt to use it. Check if Skill.use returns correct skill effect" <|
-            \randomInt ->
-                Engine.Skill.newHit "Name" "Description" 1000 12
-                    |> Engine.Skill.tick randomInt
-                    |> Engine.Skill.use
-                    |> Tuple.second
-                    |> Expect.equal
-                        (if randomInt >= 1000 then
-                            Just (Engine.Skill.Hit 12)
-
-                         else
-                            Nothing
                         )
         ]
 
@@ -160,6 +167,7 @@ skillViewtests =
             \randomInt int2 ->
                 Engine.Skill.newBuff "Name" "Description" int2 53
                     |> Engine.Skill.tick randomInt
+                    |> Tuple.first
                     |> Engine.Skill.cooldownPercentage
                     |> Expect.equal
                         (if randomInt >= max 0 int2 then

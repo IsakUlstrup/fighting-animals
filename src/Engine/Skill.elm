@@ -135,25 +135,25 @@ tickState time skill =
 
 {-| Tick skill with delta time in ms and advance state if neccesary
 -}
-tick : Int -> Skill -> Skill
+tick : Int -> Skill -> ( Skill, Maybe SkillEffect )
 tick dt skill =
     case skill.state of
         Ready ->
-            skill
+            ( skill, Nothing )
 
         Cooling ( current, max ) ->
             if current + dt >= max then
-                setReady skill
+                ( setReady skill, Nothing )
 
             else
-                tickState dt skill
+                ( tickState dt skill, Nothing )
 
         Active ( current, max ) ->
             if current + dt >= max then
-                setCooling skill
+                ( setCooling skill, Just skill.effect )
 
             else
-                tickState dt skill
+                ( tickState dt skill, Nothing )
 
 
 {-| Get skill cooldown progress in percentage 0-100
@@ -212,10 +212,10 @@ isReady skill =
 
 {-| Use skill if ready
 -}
-use : Skill -> ( Skill, Maybe SkillEffect )
+use : Skill -> Skill
 use skill =
     if isReady skill then
-        ( setActive skill, Just skill.effect )
+        setActive skill
 
     else
-        ( skill, Nothing )
+        skill
