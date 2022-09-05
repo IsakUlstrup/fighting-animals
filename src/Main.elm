@@ -7,10 +7,9 @@ import Engine.Skill as Skill exposing (Skill, SkillEffect)
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events
-import QRCode
-import Svg.Attributes as SvgA
 import View.ElmHtml
 import View.Modal exposing (Modal)
+import View.Svg
 
 
 
@@ -69,7 +68,7 @@ update msg model =
             ( { model
                 | modal =
                     model.modal
-                        |> View.Modal.show "Link QR code" (qrCodeView model.pageUrl)
+                        |> View.Modal.show "Link QR code" (View.Svg.qrCodeView model.pageUrl)
               }
             , Cmd.none
             )
@@ -89,19 +88,6 @@ update msg model =
 
 
 -- VIEW
-
-
-qrCodeView : String -> Html msg
-qrCodeView message =
-    QRCode.fromString message
-        |> Result.map
-            (QRCode.toSvg
-                [ SvgA.width "300px"
-                , SvgA.height "300px"
-                , SvgA.shapeRendering "crispEdges"
-                ]
-            )
-        |> Result.withDefault (Html.text "Error while encoding to QRCode.")
 
 
 viewDebugBar : Html Msg

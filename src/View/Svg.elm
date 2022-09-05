@@ -1,5 +1,13 @@
-module View.Svg exposing (arrowDown, arrowUp, fist, viewSpinner)
+module View.Svg exposing
+    ( arrowDown
+    , arrowUp
+    , fist
+    , qrCodeView
+    , viewSpinner
+    )
 
+import Html exposing (Html)
+import QRCode
 import Svg exposing (Svg, svg)
 import Svg.Attributes
 
@@ -44,3 +52,16 @@ viewSpinner percentage icon =
             ]
             [ icon ]
         ]
+
+
+qrCodeView : String -> Html msg
+qrCodeView message =
+    QRCode.fromString message
+        |> Result.map
+            (QRCode.toSvg
+                [ Svg.Attributes.width "300px"
+                , Svg.Attributes.height "300px"
+                , Svg.Attributes.shapeRendering "crispEdges"
+                ]
+            )
+        |> Result.withDefault (Html.text "Error while encoding to QRCode.")
