@@ -4,9 +4,8 @@ import Browser exposing (Document)
 import Browser.Events
 import Content.Skills as Skills
 import Engine.Skill as Skill exposing (Skill, SkillEffect)
-import Html exposing (Html)
+import Html
 import Html.Attributes
-import Html.Events
 import View.ElmHtml
 import View.Modal exposing (Modal)
 import View.Svg
@@ -92,20 +91,17 @@ update msg model =
 -- VIEW
 
 
-viewDebugBar : Html Msg
-viewDebugBar =
-    Html.div [ Html.Attributes.class "debug-bar" ]
-        [ Html.button [ Html.Events.onClick ShowQrModal ] [ Html.text "share" ]
-        ]
-
-
 view : Model -> Document Msg
 view model =
     { title = "Fighting Animals"
     , body =
         [ View.Modal.viewModal HideModal model.modal
-        , viewDebugBar
-        , View.ElmHtml.view model.skills model.enemySkills model.combatLog UseSkill
+        , Html.main_ [ Html.Attributes.id "app" ]
+            [ View.ElmHtml.viewStatusBar ShowQrModal
+            , View.ElmHtml.viewSmallSkills model.enemySkills
+            , View.ElmHtml.viewCombatLog model.combatLog
+            , View.ElmHtml.viewSkills model.skills UseSkill
+            ]
         ]
     }
 

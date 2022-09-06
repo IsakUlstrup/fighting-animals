@@ -1,8 +1,8 @@
-module View.ElmHtml exposing (view)
+module View.ElmHtml exposing (viewCombatLog, viewSkills, viewSmallSkills, viewStatusBar)
 
 import Engine.Skill as Skill exposing (Skill, SkillEffect)
-import Html exposing (Attribute, Html, div, h5, li, main_, p, text, ul)
-import Html.Attributes exposing (class, id)
+import Html exposing (Attribute, Html, button, div, h5, li, p, text, ul)
+import Html.Attributes exposing (class)
 import Html.Events
 import Svg exposing (Svg)
 import View.Svg
@@ -93,10 +93,20 @@ viewCombatLog combatLog =
     ul [ class "combat-log" ] (List.map viewSkillEffect combatLog)
 
 
-view : List Skill -> List Skill -> List ( Bool, SkillEffect ) -> (Int -> msg) -> Html msg
-view skills enemySkills combatLog useSkill =
-    main_ [ id "app" ]
-        [ div [ class "small-skill-buttons enemy" ] (List.map viewSmallSkill enemySkills)
-        , viewCombatLog combatLog
-        , div [ class "skill-buttons" ] (List.indexedMap (\i -> viewSkillButton (useSkill i)) skills)
+viewStatusBar : msg -> Html msg
+viewStatusBar showQrMsg =
+    div [ class "status-bar" ]
+        [ button [] [ text "<" ]
+        , h5 [] [ text "Area name" ]
+        , Html.button [ Html.Events.onClick showQrMsg ] [ Html.text "share" ]
         ]
+
+
+viewSmallSkills : List Skill -> Html msg
+viewSmallSkills skills =
+    div [ class "small-skill-buttons enemy" ] (List.map viewSmallSkill skills)
+
+
+viewSkills : List Skill -> (Int -> msg) -> Html msg
+viewSkills skills useSkill =
+    div [ class "skill-buttons" ] (List.indexedMap (\i -> viewSkillButton (useSkill i)) skills)
