@@ -1,12 +1,11 @@
+@use "./reset"
+@use "./modal"
+@use "./skill"
 
 $hit-skill-color: rgb(225, 33, 100)
 $buff-skill-color: rgb(19, 157, 162)
 $debuff-skill-color: rgb(243, 147, 29)
 $panel-color: rgb(255, 253, 242)
-
-@import "./reset"
-@import "./skill"
-@import "./modal"
 
 @keyframes small-pop
     0%
@@ -81,3 +80,6 @@ button
 .enemy
     margin-bottom: auto
     align-items: flex-end
+
+@include modal.modal($panel-color)
+@include skill.skill-button($panel-color, $hit-skill-color, $buff-skill-color, $debuff-skill-color)

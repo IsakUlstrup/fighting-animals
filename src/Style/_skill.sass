@@ -1,98 +1,99 @@
-.skill-button
-    background: rgba(255, 253, 242, 0.8)
-    padding: 0.3rem
-    border-radius: 9999rem
-    border: none
-    display: flex
-    color: #262626
-    gap: 0.5rem
-    user-select: none
-    box-shadow: 0.1rem 0.1rem 0.3rem rgba(0, 0, 0, 0.2)
-    transition: opacity 0.3s, transform 0.3s, box-shadow 0.3s
-
-    .radial-progress
-        flex: 2.5rem 0 0
+@mixin skill-button($panel-color, $hit-skill-color, $buff-skill-color, $debuff-skill-color)
+    .skill-button
+        background: rgba(255, 253, 242, 0.8)
+        padding: 0.3rem
         border-radius: 9999rem
-        transition: box-shadow 0.3s
+        border: none
+        display: flex
+        color: #262626
+        gap: 0.5rem
+        user-select: none
+        box-shadow: 0.1rem 0.1rem 0.3rem rgba(0, 0, 0, 0.2)
+        transition: opacity 0.3s, transform 0.3s, box-shadow 0.3s
 
-    &.skill-ready
-        cursor: pointer
-        animation: small-pop 0.3s
-
-    &.skill-active
-        transform: scale(1.02)
-
-    &.skill-cooling
-        opacity: 0.8
-        box-shadow: 0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.1)
-
-    &.skill-active.skill-hit .radial-progress
-        box-shadow: 0rem 0rem 0.5rem transparentize($hit-skill-color, 0.25)
-    &.skill-active.skill-buff .radial-progress
-        box-shadow: 0rem 0rem 0.5rem transparentize($buff-skill-color, 0.25)
-    &.skill-active.skill-debuff .radial-progress
-        box-shadow: 0rem 0rem 0.5rem transparentize($debuff-skill-color, 0.25)
-
-    &.skill-hit
         .radial-progress
-            circle
-                stroke: $hit-skill-color
+            flex: 2.5rem 0 0
+            border-radius: 9999rem
+            transition: box-shadow 0.3s
 
-    &.skill-buff
-        .radial-progress
-            circle
-                stroke: $buff-skill-color
+        &.skill-ready
+            cursor: pointer
+            animation: small-pop 0.3s
 
-    &.skill-debuff
-        .radial-progress
-            circle
-                stroke: $debuff-skill-color
+        &.skill-active
+            transform: scale(1.02)
 
-.skill-meta
-    display: flex
-    flex-direction: column
-    align-items: flex-start
-    justify-content: center
+        &.skill-cooling
+            opacity: 0.8
+            box-shadow: 0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.1)
 
-    h5
-        font-weight: normal
-        font-size: 13px
+        &.skill-active.skill-hit .radial-progress
+            box-shadow: 0rem 0rem 0.5rem transparentize($hit-skill-color, 0.25)
+        &.skill-active.skill-buff .radial-progress
+            box-shadow: 0rem 0rem 0.5rem transparentize($buff-skill-color, 0.25)
+        &.skill-active.skill-debuff .radial-progress
+            box-shadow: 0rem 0rem 0.5rem transparentize($debuff-skill-color, 0.25)
 
-    p
-        font-weight: lighter
-        font-size: 12px
+        &.skill-hit
+            .radial-progress
+                circle
+                    stroke: $hit-skill-color
 
-.small-skill
-    width: 0.5rem
-    height: 0.5rem
-    display: block
-    background: red
-    border-radius: 9999rem
-    transition: opacity 0.3s, transform 0.3s
+        &.skill-buff
+            .radial-progress
+                circle
+                    stroke: $buff-skill-color
 
-    // &.skill-ready
-    //     animation: pop 0.3s
+        &.skill-debuff
+            .radial-progress
+                circle
+                    stroke: $debuff-skill-color
 
-    &.skill-hit
-        background: $hit-skill-color
+    .skill-meta
+        display: flex
+        flex-direction: column
+        align-items: flex-start
+        justify-content: center
 
-    &.skill-buff
-        background: $buff-skill-color
+        h5
+            font-weight: normal
+            font-size: 13px
 
-    &.skill-debuff
-        background: $debuff-skill-color
+        p
+            font-weight: lighter
+            font-size: 12px
 
-    &.skill-active.skill-hit
-        box-shadow: 0 0 0.3rem $hit-skill-color
-        transform: scale(1.5)
+    .small-skill
+        width: 0.5rem
+        height: 0.5rem
+        display: block
+        background: red
+        border-radius: 9999rem
+        transition: opacity 0.3s, transform 0.3s
 
-    &.skill-active.skill-buff
-        box-shadow: 0 0 0.3rem $buff-skill-color
-        transform: scale(1.5)
+        // &.skill-ready
+        //     animation: pop 0.3s
 
-    &.skill-active.skill-debuff
-        box-shadow: 0 0 0.3rem $debuff-skill-color
-        transform: scale(1.5)
+        &.skill-hit
+            background: $hit-skill-color
 
-    &.skill-cooling
-        opacity: 0.2
+        &.skill-buff
+            background: $buff-skill-color
+
+        &.skill-debuff
+            background: $debuff-skill-color
+
+        &.skill-active.skill-hit
+            box-shadow: 0 0 0.3rem $hit-skill-color
+            transform: scale(1.5)
+
+        &.skill-active.skill-buff
+            box-shadow: 0 0 0.3rem $buff-skill-color
+            transform: scale(1.5)
+
+        &.skill-active.skill-debuff
+            box-shadow: 0 0 0.3rem $debuff-skill-color
+            transform: scale(1.5)
+
+        &.skill-cooling
+            opacity: 0.2
