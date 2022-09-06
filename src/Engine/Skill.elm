@@ -12,7 +12,6 @@ module Engine.Skill exposing
     , tickList
     , use
     , useAtIndex
-    , useTime
     )
 
 
@@ -20,6 +19,7 @@ type alias Skill =
     { name : String
     , description : String
     , cooldownTime : Int
+    , useTime : Int
     , state : SkillState
     , effect : SkillEffect
     }
@@ -37,13 +37,6 @@ type SkillEffect
     | Debuff Int
 
 
-{-| Skill use time constant
--}
-useTime : Int
-useTime =
-    200
-
-
 {-| Create new skill
 
 cooldownTime is intended to be milliseconds
@@ -51,47 +44,51 @@ cooldownTime is intended to be milliseconds
 useTime is set to 100 ms for now
 
 -}
-new : String -> String -> Int -> SkillEffect -> Skill
-new name description cooldownTime effect =
+new : String -> String -> Int -> SkillEffect -> Int -> Skill
+new name description cooldownTime effect useTime =
     Skill
         name
         description
         (max 0 cooldownTime)
+        useTime
         (Cooling ( 0, max 0 cooldownTime ))
         effect
 
 
 {-| Create new skill with hit effect
 -}
-newHit : String -> String -> Int -> Int -> Skill
-newHit name description cooldownTime power =
+newHit : String -> String -> Int -> Int -> Int -> Skill
+newHit name description cooldownTime power useTime =
     new
         name
         description
         (max 0 cooldownTime)
         (Hit <| max 0 power)
+        useTime
 
 
 {-| Create new skill with buff effect
 -}
-newBuff : String -> String -> Int -> Int -> Skill
-newBuff name description cooldownTime power =
+newBuff : String -> String -> Int -> Int -> Int -> Skill
+newBuff name description cooldownTime power useTime =
     new
         name
         description
         (max 0 cooldownTime)
         (Buff <| max 0 power)
+        useTime
 
 
 {-| Create new skill with debuff effect
 -}
-newDebuff : String -> String -> Int -> Int -> Skill
-newDebuff name description cooldownTime power =
+newDebuff : String -> String -> Int -> Int -> Int -> Skill
+newDebuff name description cooldownTime power useTime =
     new
         name
         description
         (max 0 cooldownTime)
         (Debuff <| max 0 power)
+        useTime
 
 
 {-| Set skill state to ready
@@ -112,7 +109,7 @@ setCooling skill =
 -}
 setActive : Skill -> Skill
 setActive skill =
-    { skill | state = Active ( 0, useTime ) }
+    { skill | state = Active ( 0, skill.useTime ) }
 
 
 {-| tick skill state timers, does not advance state

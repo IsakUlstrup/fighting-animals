@@ -31,8 +31,7 @@ init pageUrl =
         , Skills.buffSkill
         , Skills.basicSkill
         ]
-        [ Skills.basicSkill
-        , Skills.slowSkill
+        [ Skills.enemyBasicSkill
         ]
         []
         View.Modal.new

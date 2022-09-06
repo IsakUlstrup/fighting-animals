@@ -28,19 +28,19 @@ newSkillTests =
     describe "New skill"
         [ fuzz string "new skill with random name " <|
             \radnomString ->
-                Engine.Skill.newHit radnomString "Description" 1000 0
+                Engine.Skill.newHit radnomString "Description" 1000 0 540
                     |> .name
                     |> Expect.equal
                         radnomString
         , fuzz string "new skill with random description " <|
             \randomString ->
-                Engine.Skill.newHit "Name" randomString 1000 2
+                Engine.Skill.newHit "Name" randomString 1000 2 320
                     |> .description
                     |> Expect.equal
                         randomString
         , fuzz int "new skill with random cooldown, should be (0, > 0)" <|
             \randomInt ->
-                Engine.Skill.newHit "Name" "Description" randomInt 45
+                Engine.Skill.newHit "Name" "Description" randomInt 45 500
                     |> .state
                     |> Expect.equal
                         (if randomInt < 0 then
@@ -51,7 +51,7 @@ newSkillTests =
                         )
         , fuzz int "new hit skill with random power, negative numbers should be clamped" <|
             \randomInt ->
-                Engine.Skill.newHit "Name" "Description" 3050 randomInt
+                Engine.Skill.newHit "Name" "Description" 3050 randomInt 100
                     |> .effect
                     |> Expect.equal
                         (if randomInt < 0 then
@@ -62,13 +62,13 @@ newSkillTests =
                         )
         , test "new skill, state should be cooling" <|
             \_ ->
-                Engine.Skill.newHit "Name" "Description" 1000 15
+                Engine.Skill.newHit "Name" "Description" 1000 15 1230
                     |> .state
                     |> Expect.equal
                         (Engine.Skill.Cooling ( 0, 1000 ))
         , test "new hit skill" <|
             \_ ->
-                Engine.Skill.newHit "Name" "Description" 2000 10
+                Engine.Skill.newHit "Name" "Description" 2000 10 2340
                     |> .effect
                     |> Expect.equal
                         (Engine.Skill.Hit 10)
@@ -80,7 +80,7 @@ skillInteractionTests =
     describe "Skill interaction"
         [ fuzz int "Tick skill by random delta time, verify skill state" <|
             \randomInt ->
-                Engine.Skill.newBuff "Name" "Description" 1000 25
+                Engine.Skill.newBuff "Name" "Description" 1000 25 430
                     |> Engine.Skill.tick randomInt
                     |> Tuple.first
                     |> .state
@@ -96,7 +96,7 @@ skillInteractionTests =
                         )
         , fuzz int "Tick active skill by random delta time, verify skill effect" <|
             \randomInt ->
-                Engine.Skill.newBuff "Name" "Description" 1000 25
+                Engine.Skill.newBuff "Name" "Description" 1000 25 100
                     |> Engine.Skill.tick 1000
                     |> Tuple.first
                     |> Engine.Skill.use
@@ -111,7 +111,7 @@ skillInteractionTests =
                         )
         , fuzz2 int int "Tick skill by random delta time twice" <|
             \randomInt1 randomInt2 ->
-                Engine.Skill.newDebuff "Name" "Description" 1000 3
+                Engine.Skill.newDebuff "Name" "Description" 1000 3 3452
                     |> Engine.Skill.tick randomInt1
                     |> Tuple.first
                     |> Engine.Skill.tick randomInt2
@@ -129,7 +129,7 @@ skillInteractionTests =
                         )
         , test "Tick skill by half of cd time, then get cooldown progress, should be 50" <|
             \_ ->
-                Engine.Skill.newHit "Name" "Description" 1000 200
+                Engine.Skill.newHit "Name" "Description" 1000 200 345
                     |> Engine.Skill.tick 500
                     |> Tuple.first
                     |> Engine.Skill.cooldownPercentage
@@ -137,7 +137,7 @@ skillInteractionTests =
                         50
         , fuzz int "Is skill ready?" <|
             \randomInt ->
-                Engine.Skill.newDebuff "Name" "Description" 1000 32
+                Engine.Skill.newDebuff "Name" "Description" 1000 32 423
                     |> Engine.Skill.tick randomInt
                     |> Tuple.first
                     |> Engine.Skill.isReady
@@ -145,14 +145,14 @@ skillInteractionTests =
                         (randomInt >= 1000)
         , fuzz int "Tick skill by random delta time, then attempt to use it. Check is state is correct" <|
             \randomInt ->
-                Engine.Skill.newHit "Name" "Description" 1000 12
+                Engine.Skill.newHit "Name" "Description" 1000 12 1000
                     |> Engine.Skill.tick randomInt
                     |> Tuple.first
                     |> Engine.Skill.use
                     |> .state
                     |> Expect.equal
                         (if randomInt >= 1000 then
-                            Engine.Skill.Active ( 0, Engine.Skill.useTime )
+                            Engine.Skill.Active ( 0, 1000 )
 
                          else
                             Engine.Skill.Cooling ( clamp 0 1000 randomInt, 1000 )
@@ -165,7 +165,7 @@ skillViewtests =
     describe "View helpers"
         [ fuzz2 int int "Tick skill by random delta time, then get cooldown progress" <|
             \randomInt int2 ->
-                Engine.Skill.newBuff "Name" "Description" int2 53
+                Engine.Skill.newBuff "Name" "Description" int2 53 400
                     |> Engine.Skill.tick randomInt
                     |> Tuple.first
                     |> Engine.Skill.cooldownPercentage
@@ -178,7 +178,7 @@ skillViewtests =
                         )
         , test "Skill effect to string" <|
             \_ ->
-                Engine.Skill.newBuff "Name" "Description" 500 53
+                Engine.Skill.newBuff "Name" "Description" 500 53 -200
                     |> .effect
                     |> Engine.Skill.effectToString
                     |> Expect.equal
@@ -191,9 +191,9 @@ skillListTests =
     describe "Skill lists"
         [ test "Use skill at index 1 in a list of ready skills" <|
             \_ ->
-                [ Engine.Skill.newHit "Hit" "Description" 500 53
-                , Engine.Skill.newBuff "Buff" "Description" 500 10
-                , Engine.Skill.newDebuff "Debuff" "Description" 500 5
+                [ Engine.Skill.newHit "Hit" "Description" 500 53 0
+                , Engine.Skill.newBuff "Buff" "Description" 500 10 500
+                , Engine.Skill.newDebuff "Debuff" "Description" 500 5 53
                 ]
                     |> Engine.Skill.tickList 500
                     |> Tuple.first
@@ -201,14 +201,14 @@ skillListTests =
                     |> List.map .state
                     |> Expect.equal
                         [ Engine.Skill.Ready
-                        , Engine.Skill.Active ( 0, Engine.Skill.useTime )
+                        , Engine.Skill.Active ( 0, 500 )
                         , Engine.Skill.Ready
                         ]
         , test "Use skill at index 5 (out of bounds) in a list of ready skills, should return unchanged list" <|
             \_ ->
-                [ Engine.Skill.newHit "Hit" "Description" 500 53
-                , Engine.Skill.newBuff "Buff" "Description" 500 10
-                , Engine.Skill.newDebuff "Debuff" "Description" 500 5
+                [ Engine.Skill.newHit "Hit" "Description" 500 53 150
+                , Engine.Skill.newBuff "Buff" "Description" 500 10 300
+                , Engine.Skill.newDebuff "Debuff" "Description" 500 5 400
                 ]
                     |> Engine.Skill.tickList 500
                     |> Tuple.first
@@ -221,15 +221,15 @@ skillListTests =
                         ]
         , test "Tick a list of active skills, check returned skill effects" <|
             \_ ->
-                [ Engine.Skill.newHit "Hit" "Description" 500 53
-                , Engine.Skill.newBuff "Buff" "Description" 500 10
-                , Engine.Skill.newDebuff "Debuff" "Description" 500 5
+                [ Engine.Skill.newHit "Hit" "Description" 500 53 200
+                , Engine.Skill.newBuff "Buff" "Description" 500 10 200
+                , Engine.Skill.newDebuff "Debuff" "Description" 500 5 200
                 ]
                     |> Engine.Skill.tickList 500
                     |> Tuple.first
                     |> Engine.Skill.useAtIndex 0
                     |> Engine.Skill.useAtIndex 1
-                    |> Engine.Skill.tickList Engine.Skill.useTime
+                    |> Engine.Skill.tickList 200
                     |> Tuple.second
                     |> Expect.equal
                         [ Engine.Skill.Hit 53
