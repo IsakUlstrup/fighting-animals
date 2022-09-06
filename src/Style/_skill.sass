@@ -14,7 +14,6 @@
         .radial-progress
             flex: 2.5rem 0 0
             border-radius: 9999rem
-            transition: box-shadow 0.3s
 
         &.skill-ready
             cursor: pointer
@@ -26,13 +25,6 @@
         &.skill-cooling
             opacity: 0.8
             box-shadow: 0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.1)
-
-        &.skill-active.skill-hit .radial-progress
-            box-shadow: 0rem 0rem 0.5rem transparentize($hit-skill-color, 0.25)
-        &.skill-active.skill-buff .radial-progress
-            box-shadow: 0rem 0rem 0.5rem transparentize($buff-skill-color, 0.25)
-        &.skill-active.skill-debuff .radial-progress
-            box-shadow: 0rem 0rem 0.5rem transparentize($debuff-skill-color, 0.25)
 
         &.skill-hit
             .radial-progress
