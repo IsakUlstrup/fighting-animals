@@ -50,7 +50,6 @@ type Msg
     = Tick Int
     | UseSkill Int
     | ShowQrModal
-    | ShowCombatLog
     | HideModal
 
 
@@ -85,15 +84,6 @@ update msg model =
             , Cmd.none
             )
 
-        ShowCombatLog ->
-            ( { model
-                | modal =
-                    model.modal
-                        |> View.Modal.show "Combat Log" (View.ElmHtml.viewCombatLog model.combatLog)
-              }
-            , Cmd.none
-            )
-
         HideModal ->
             ( { model | modal = View.Modal.hide model.modal }, Cmd.none )
 
@@ -102,11 +92,10 @@ update msg model =
 -- VIEW
 
 
-viewDebugBar : List SkillEffect -> Html Msg
-viewDebugBar combatLog =
+viewDebugBar : Html Msg
+viewDebugBar =
     Html.div [ Html.Attributes.class "debug-bar" ]
         [ Html.button [ Html.Events.onClick ShowQrModal ] [ Html.text "share" ]
-        , Html.button [ Html.Events.onClick ShowCombatLog ] [ Html.text ("log (" ++ (String.fromInt <| List.length combatLog) ++ ")") ]
         ]
 
 
@@ -115,7 +104,7 @@ view model =
     { title = "Fighting Animals"
     , body =
         [ View.Modal.viewModal HideModal model.modal
-        , viewDebugBar model.combatLog
+        , viewDebugBar
         , View.ElmHtml.view model.skills model.enemySkills model.combatLog UseSkill
         ]
     }

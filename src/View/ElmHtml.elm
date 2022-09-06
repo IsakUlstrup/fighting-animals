@@ -1,4 +1,4 @@
-module View.ElmHtml exposing (view, viewCombatLog)
+module View.ElmHtml exposing (view)
 
 import Engine.Skill as Skill exposing (Skill, SkillEffect)
 import Html exposing (Attribute, Html, div, h5, li, main_, p, text, ul)
