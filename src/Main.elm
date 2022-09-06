@@ -19,7 +19,7 @@ import View.Svg
 type alias Model =
     { skills : List Skill
     , enemySkills : List Skill
-    , combatLog : List SkillEffect
+    , combatLog : List ( Bool, SkillEffect )
     , modal : Modal Msg
     , pageUrl : String
     }
@@ -67,7 +67,7 @@ update msg model =
             ( { model
                 | skills = skills
                 , enemySkills = enemySkills |> List.map Skill.use
-                , combatLog = effects ++ enemyEffects ++ model.combatLog |> List.take 50
+                , combatLog = List.map (\e -> ( True, e )) effects ++ List.map (\e -> ( False, e )) enemyEffects ++ model.combatLog |> List.take 50
               }
             , Cmd.none
             )

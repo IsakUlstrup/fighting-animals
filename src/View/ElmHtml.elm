@@ -75,17 +75,25 @@ viewSkillButton clickMsg skill =
         ]
 
 
-viewSkillEffect : SkillEffect -> Html msg
-viewSkillEffect effect =
-    li [] [ text <| Skill.effectToString effect ]
+viewSkillEffect : ( Bool, SkillEffect ) -> Html msg
+viewSkillEffect ( player, effect ) =
+    li
+        [ class <|
+            if player then
+                "player-effect"
+
+            else
+                "enemy-effect"
+        ]
+        [ text <| Skill.effectToString effect ]
 
 
-viewCombatLog : List SkillEffect -> Html msg
-viewCombatLog skillEffects =
-    ul [ class "combat-log" ] (List.map viewSkillEffect skillEffects)
+viewCombatLog : List ( Bool, SkillEffect ) -> Html msg
+viewCombatLog combatLog =
+    ul [ class "combat-log" ] (List.map viewSkillEffect combatLog)
 
 
-view : List Skill -> List Skill -> List SkillEffect -> (Int -> msg) -> Html msg
+view : List Skill -> List Skill -> List ( Bool, SkillEffect ) -> (Int -> msg) -> Html msg
 view skills enemySkills combatLog useSkill =
     main_ [ id "app" ]
         [ div [ class "small-skill-buttons enemy" ] (List.map viewSmallSkill enemySkills)
