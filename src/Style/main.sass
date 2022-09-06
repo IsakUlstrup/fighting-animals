@@ -14,27 +14,10 @@ $panel-color: rgb(255, 253, 242)
         transform: scale(1.02)
     100%
         transform: scale(1)
-@keyframes pop-fade
-    0%
-        transform: scale(1)
-        opacity: 1
-    60%
-        transform: scale(1.02)
-    95%
-        transform: scale(1)
-        opacity: 0
-    100%
-        transform: scale(1)
-        opacity: 0
-        display: none
-        height: 0
 
-body
+html
     background: #cc95c0
     background: linear-gradient(-12deg, #cc95c0, #dbd4b4, #7aa1d2)
-
-button
-    color: #262626
 
 #app
     height: 100vh
@@ -57,7 +40,7 @@ button
 .combat-log
     list-style: none
     max-height: 10rem
-    overflow-y: hidden
+    overflow: hidden
     display: flex
     flex-direction: column-reverse
     li
@@ -68,18 +51,6 @@ button
         color: green
     .enemy-effect
         color: red
-
-.radial-progress-icon
-    fill: #262626
-
-.skill-effects
-    background: rgba(255, 253, 242, 0.8)
-    box-shadow: 0.1rem 0.1rem 0.3rem rgba(0, 0, 0, 0.2)
-    padding: 1rem
-    color: #262626
-    border-radius: 1rem
-    height: 15rem
-    overflow-y: scroll
 
 .skill-buttons
     display: flex
