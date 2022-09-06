@@ -104,7 +104,7 @@ viewStatusBar showQrMsg =
 
 viewSmallSkills : List Skill -> Html msg
 viewSmallSkills skills =
-    div [ class "small-skill-buttons enemy" ] (List.map viewSmallSkill skills)
+    div [ class "skill-buttons small enemy" ] (List.map viewSmallSkill skills)
 
 
 viewSkills : List Skill -> (Int -> msg) -> Html msg

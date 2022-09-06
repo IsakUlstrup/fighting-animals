@@ -41,8 +41,9 @@ body
 
 .combat-log
     list-style: none
-    max-height: 10rem
-    overflow: hidden
+    flex: auto
+    margin: 2rem
+    overflow-y: scroll
     display: flex
     flex-direction: column-reverse
     li
@@ -59,12 +60,10 @@ body
     flex-direction: column
     gap: 0.7rem
 
-.small-skill-buttons
-    display: flex
-    flex-direction: column
+.skill-buttons.small
     gap: 0.3rem
 
-.enemy
+.skill-buttons.enemy
     margin-bottom: auto
     align-items: flex-end
 
