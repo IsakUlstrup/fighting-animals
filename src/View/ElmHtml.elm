@@ -85,9 +85,10 @@ viewCombatLog skillEffects =
     ul [ class "combat-log" ] (List.map viewSkillEffect skillEffects)
 
 
-view : List Skill -> List Skill -> (Int -> msg) -> Html msg
-view skills enemySkills useSkill =
+view : List Skill -> List Skill -> List SkillEffect -> (Int -> msg) -> Html msg
+view skills enemySkills combatLog useSkill =
     main_ [ id "app" ]
         [ div [ class "small-skill-buttons enemy" ] (List.map viewSmallSkill enemySkills)
+        , viewCombatLog combatLog
         , div [ class "skill-buttons" ] (List.indexedMap (\i -> viewSkillButton (useSkill i)) skills)
         ]

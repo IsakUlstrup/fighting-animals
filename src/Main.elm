@@ -116,7 +116,7 @@ view model =
     , body =
         [ View.Modal.viewModal HideModal model.modal
         , viewDebugBar model.combatLog
-        , View.ElmHtml.view model.skills model.enemySkills UseSkill
+        , View.ElmHtml.view model.skills model.enemySkills model.combatLog UseSkill
         ]
     }
 
