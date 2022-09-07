@@ -9,9 +9,7 @@ module Engine.Skill exposing
     , initHit
     , isReady
     , tick
-    , tickList
     , use
-    , useAtIndex
     , withCooldown
     , withDescription
     , withName
@@ -262,28 +260,3 @@ use skill =
 
     else
         skill
-
-
-
----- SKILL LIST ----
-
-
-useAtIndex : Int -> List Skill -> List Skill
-useAtIndex index skills =
-    let
-        updateAtIndex : Int -> (Skill -> Skill) -> Int -> Skill -> Skill
-        updateAtIndex target f i skill =
-            if i == target then
-                f skill
-
-            else
-                skill
-    in
-    List.indexedMap (updateAtIndex index use) skills
-
-
-tickList : Int -> List Skill -> ( List Skill, List SkillEffect )
-tickList dt skills =
-    List.map (tick dt) skills
-        |> List.unzip
-        |> Tuple.mapSecond (List.filterMap identity)

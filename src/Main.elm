@@ -3,7 +3,8 @@ module Main exposing (Model, Msg, main)
 import Browser exposing (Document)
 import Browser.Events
 import Content.Skills as Skills
-import Engine.Skill as Skill exposing (Skill, SkillEffect)
+import Engine.Animal as Animal exposing (Animal)
+import Engine.Skill as Skill exposing (SkillEffect)
 import Html
 import Html.Attributes
 import View.ElmHtml
@@ -16,8 +17,8 @@ import View.Svg
 
 
 type alias Model =
-    { skills : List Skill
-    , enemySkills : List Skill
+    { playerAnimal : Animal
+    , enemyAnimal : Animal
     , combatLog : List ( Bool, SkillEffect )
     , modal : Modal Msg
     , pageUrl : String
@@ -27,12 +28,14 @@ type alias Model =
 init : String -> ( Model, Cmd msg )
 init pageUrl =
     ( Model
-        [ Skills.debuffSkill
-        , Skills.buffSkill
-        , Skills.basicSkill
-        ]
-        [ Skills.enemyBasicSkill
-        ]
+        (Animal.new "Player"
+            |> Animal.addSkill Skills.debuffSkill
+            |> Animal.addSkill Skills.buffSkill
+            |> Animal.addSkill Skills.basicSkill
+        )
+        (Animal.new "Enemy"
+            |> Animal.addSkill Skills.enemyBasicSkill
+        )
         []
         View.Modal.new
         pageUrl
@@ -56,22 +59,22 @@ update msg model =
     case msg of
         Tick dt ->
             let
-                ( skills, effects ) =
-                    model.skills |> Skill.tickList dt
+                ( player, effects ) =
+                    model.playerAnimal |> Animal.tickSkills dt
 
-                ( enemySkills, enemyEffects ) =
-                    model.enemySkills |> Skill.tickList dt
+                ( enemy, enemyEffects ) =
+                    model.enemyAnimal |> Animal.tickSkills dt
             in
             ( { model
-                | skills = skills
-                , enemySkills = enemySkills |> List.map Skill.use
+                | playerAnimal = player
+                , enemyAnimal = enemy |> Animal.useAllSkills
                 , combatLog = List.map (\e -> ( True, e )) effects ++ List.map (\e -> ( False, e )) enemyEffects ++ model.combatLog |> List.take 50
               }
             , Cmd.none
             )
 
         UseSkill index ->
-            ( { model | skills = model.skills |> Skill.useAtIndex index }, Cmd.none )
+            ( { model | playerAnimal = model.playerAnimal |> Animal.useSkillAtIndex index }, Cmd.none )
 
         ShowQrModal ->
             ( { model
@@ -97,9 +100,9 @@ view model =
         [ View.Modal.viewModal HideModal model.modal
         , Html.main_ [ Html.Attributes.id "app" ]
             [ View.ElmHtml.viewStatusBar ShowQrModal
-            , View.ElmHtml.viewSmallSkills model.enemySkills
+            , View.ElmHtml.viewSmallSkills model.enemyAnimal.skills
             , View.ElmHtml.viewCombatLog model.combatLog
-            , View.ElmHtml.viewSkills model.skills UseSkill
+            , View.ElmHtml.viewSkills model.playerAnimal.skills UseSkill
             ]
         ]
     }
@@ -111,7 +114,7 @@ view model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    if List.all Skill.isReady model.skills && List.all Skill.isReady model.enemySkills then
+    if List.all Skill.isReady model.playerAnimal.skills && List.all Skill.isReady model.enemyAnimal.skills then
         Sub.none
 
     else

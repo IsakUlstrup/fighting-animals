@@ -23,6 +23,7 @@ buffSkill =
         |> Skill.withName "Buff"
         |> Skill.withDescription "Applies a buff"
         |> Skill.withCooldown 3000
+        |> Skill.withUseTime 500
 
 
 debuffSkill : Skill

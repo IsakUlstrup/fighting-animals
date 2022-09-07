@@ -1,4 +1,4 @@
-module Skill exposing (newSkillTests, skillInteractionTests, skillListTests, skillViewtests)
+module Skill exposing (newSkillTests, skillInteractionTests, skillViewtests)
 
 import Engine.Skill
 import Expect
@@ -52,6 +52,13 @@ newSkillTests =
                          else
                             Engine.Skill.Cooling ( 0, randomInt )
                         )
+        , fuzz int "new skill with random use time" <|
+            \randomInt ->
+                Engine.Skill.initBuff 10
+                    |> Engine.Skill.withUseTime randomInt
+                    |> .useTime
+                    |> Expect.equal
+                        (max 0 randomInt)
         , fuzz int "new hit skill with random power, negative numbers should be clamped" <|
             \randomInt ->
                 Engine.Skill.initHit randomInt
@@ -156,17 +163,18 @@ skillInteractionTests =
         , fuzz int "Tick skill by random delta time, then attempt to use it. Check is state is correct" <|
             \randomInt ->
                 Engine.Skill.initHit 12
-                    |> Engine.Skill.withUseTime 2000
+                    |> Engine.Skill.withCooldown 1000
+                    |> Engine.Skill.withUseTime 600
                     |> Engine.Skill.tick randomInt
                     |> Tuple.first
                     |> Engine.Skill.use
                     |> .state
                     |> Expect.equal
-                        (if randomInt >= 2000 then
-                            Engine.Skill.Active ( 0, 2000 )
+                        (if randomInt >= 1000 then
+                            Engine.Skill.Active ( 0, 600 )
 
                          else
-                            Engine.Skill.Cooling ( clamp 0 2000 randomInt, 2000 )
+                            Engine.Skill.Cooling ( clamp 0 1000 randomInt, 1000 )
                         )
         ]
 
@@ -203,55 +211,4 @@ skillViewtests =
                     |> Engine.Skill.cooldownPercentage
                     |> Expect.equal
                         50
-        ]
-
-
-skillListTests : Test
-skillListTests =
-    describe "Skill lists"
-        [ test "Use skill at index 1 in a list of ready skills" <|
-            \_ ->
-                [ Engine.Skill.initHit 25
-                , Engine.Skill.initBuff 10 |> Engine.Skill.withUseTime 500
-                , Engine.Skill.initDebuff 5
-                ]
-                    |> Engine.Skill.tickList 2000
-                    |> Tuple.first
-                    |> Engine.Skill.useAtIndex 1
-                    |> List.map .state
-                    |> Expect.equal
-                        [ Engine.Skill.Ready
-                        , Engine.Skill.Active ( 0, 500 )
-                        , Engine.Skill.Ready
-                        ]
-        , test "Use skill at index 5 (out of bounds) in a list of ready skills, should return unchanged list" <|
-            \_ ->
-                [ Engine.Skill.initHit 20
-                , Engine.Skill.initBuff 10
-                , Engine.Skill.initDebuff 45
-                ]
-                    |> Engine.Skill.tickList 2000
-                    |> Tuple.first
-                    |> Engine.Skill.useAtIndex 5
-                    |> List.map .state
-                    |> Expect.equal
-                        [ Engine.Skill.Ready
-                        , Engine.Skill.Ready
-                        , Engine.Skill.Ready
-                        ]
-        , test "Tick a list of active skills, check returned skill effects" <|
-            \_ ->
-                [ Engine.Skill.initHit 20
-                , Engine.Skill.initBuff 10
-                ]
-                    |> Engine.Skill.tickList 2000
-                    |> Tuple.first
-                    |> Engine.Skill.useAtIndex 0
-                    |> Engine.Skill.useAtIndex 1
-                    |> Engine.Skill.tickList 500
-                    |> Tuple.second
-                    |> Expect.equal
-                        [ Engine.Skill.Hit 20
-                        , Engine.Skill.Buff 10
-                        ]
         ]
