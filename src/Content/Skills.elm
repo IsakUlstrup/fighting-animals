@@ -1,23 +1,39 @@
-module Content.Skills exposing (basicSkill, buffSkill, debuffSkill, enemyBasicSkill)
+module Content.Skills exposing
+    ( basicSkill
+    , buffSkill
+    , debuffSkill
+    , enemyBasicSkill
+    )
 
 import Engine.Skill as Skill exposing (Skill)
 
 
 basicSkill : Skill
 basicSkill =
-    Skill.newHit "Basic Hit Skill" "Just a basic skill, nothing special" 1000 12 200
+    Skill.initHit 12
+        |> Skill.withName "Basic skill"
+        |> Skill.withDescription "A basic skill, nothing special"
+        |> Skill.withCooldown 1500
+        |> Skill.withUseTime 300
 
 
 buffSkill : Skill
 buffSkill =
-    Skill.newBuff "Buff Skill" "This is a buff skill" 2000 25 200
+    Skill.initBuff 25
+        |> Skill.withName "Buff"
+        |> Skill.withDescription "Applies a buff"
+        |> Skill.withCooldown 3000
 
 
 debuffSkill : Skill
 debuffSkill =
-    Skill.newDebuff "Debuff Skill" "This is a debuff skill" 5000 50 200
+    Skill.initDebuff 50
+        |> Skill.withName "Debuff"
+        |> Skill.withDescription "Applies a debuff"
 
 
 enemyBasicSkill : Skill
 enemyBasicSkill =
-    Skill.newHit "Basic Hit Skill" "Just a basic skill, nothing special" 1000 12 800
+    Skill.initHit 5
+        |> Skill.withCooldown 4000
+        |> Skill.withUseTime 1000

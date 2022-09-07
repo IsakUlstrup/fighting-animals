@@ -4,14 +4,18 @@ module Engine.Skill exposing
     , SkillState(..)
     , cooldownPercentage
     , effectToString
+    , initBuff
+    , initDebuff
+    , initHit
     , isReady
-    , newBuff
-    , newDebuff
-    , newHit
     , tick
     , tickList
     , use
     , useAtIndex
+    , withCooldown
+    , withDescription
+    , withName
+    , withUseTime
     )
 
 
@@ -37,11 +41,13 @@ type SkillEffect
     | Debuff Int
 
 
+
+---- BUILDER ----
+
+
 {-| Create new skill
 
 cooldownTime is intended to be milliseconds
-
-useTime is set to 100 ms for now
 
 -}
 new : String -> String -> Int -> SkillEffect -> Int -> Skill
@@ -55,40 +61,77 @@ new name description cooldownTime effect useTime =
         effect
 
 
-{-| Create new skill with hit effect
+{-| Initial hit skill with provided power
 -}
-newHit : String -> String -> Int -> Int -> Int -> Skill
-newHit name description cooldownTime power useTime =
-    new
-        name
-        description
-        (max 0 cooldownTime)
-        (Hit <| max 0 power)
-        useTime
+initHit : Int -> Skill
+initHit power =
+    new "Unnamed Skill" "Hit type" 2000 (Hit <| max 0 power) 500
 
 
-{-| Create new skill with buff effect
+{-| Initial hit skill with provided power
 -}
-newBuff : String -> String -> Int -> Int -> Int -> Skill
-newBuff name description cooldownTime power useTime =
-    new
-        name
-        description
-        (max 0 cooldownTime)
-        (Buff <| max 0 power)
-        useTime
+initBuff : Int -> Skill
+initBuff power =
+    new "Unnamed Skill" "Buff type" 2000 (Buff <| max 0 power) 500
 
 
-{-| Create new skill with debuff effect
+{-| Initial debuff skill with provided power
 -}
-newDebuff : String -> String -> Int -> Int -> Int -> Skill
-newDebuff name description cooldownTime power useTime =
-    new
-        name
-        description
-        (max 0 cooldownTime)
-        (Debuff <| max 0 power)
-        useTime
+initDebuff : Int -> Skill
+initDebuff power =
+    new "Unnamed Skill" "Debuff type" 2000 (Debuff <| max 0 power) 500
+
+
+{-| Set skill name
+-}
+withName : String -> Skill -> Skill
+withName name skill =
+    { skill | name = name }
+
+
+{-| Set skill description
+-}
+withDescription : String -> Skill -> Skill
+withDescription description skill =
+    { skill | description = description }
+
+
+{-| Set skill cooldown
+-}
+withCooldown : Int -> Skill -> Skill
+withCooldown cooldown skill =
+    case skill.state of
+        Cooling ( current, _ ) ->
+            { skill
+                | cooldownTime = max 0 cooldown
+                , state = Cooling ( current, max 0 cooldown )
+            }
+
+        _ ->
+            { skill
+                | cooldownTime = max 0 cooldown
+            }
+
+
+{-| Set skill use time
+-}
+withUseTime : Int -> Skill -> Skill
+withUseTime useTime skill =
+    case skill.state of
+        Active ( current, _ ) ->
+            { skill
+                | useTime = max 0 useTime
+                , state = Active ( current, max 0 useTime )
+            }
+
+        _ ->
+            { skill
+                | useTime = max 0 useTime
+            }
+
+
+
+---- STATE ----
 
 
 {-| Set skill state to ready
