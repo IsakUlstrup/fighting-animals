@@ -32,7 +32,7 @@ char : Char -> Svg msg
 char c =
     Svg.text_
         [ Svg.Attributes.y "50%"
-        , Svg.Attributes.x "50%"
+        , Svg.Attributes.x "30%"
         , Svg.Attributes.textAnchor "middle"
         , Svg.Attributes.fontSize "20px"
         ]
