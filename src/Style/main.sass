@@ -7,6 +7,7 @@ $hit-skill-color: rgb(225, 33, 100)
 $buff-skill-color: rgb(19, 157, 162)
 $debuff-skill-color: rgb(243, 147, 29)
 $panel-color: rgb(255, 253, 242)
+$text-color: #262626
 
 @keyframes small-pop
     0%
@@ -70,4 +71,4 @@ body
 
 @include modal.modal($panel-color)
 @include skill.skill-button($panel-color, $hit-skill-color, $buff-skill-color, $debuff-skill-color)
-@include animal.animal()
+@include animal.animal($text-color)

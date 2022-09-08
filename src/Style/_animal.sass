@@ -1,8 +1,9 @@
-@mixin animal()
+@mixin animal($text-color)
     .animal
         display: flex
         flex-direction: column
         gap: 2rem
+        color: $text-color
 
         .status
             display: flex
@@ -15,4 +16,4 @@
                 border-radius: 9999rem
 
             .radial-progress-icon
-                fill: #262626
+                fill: $text-color
