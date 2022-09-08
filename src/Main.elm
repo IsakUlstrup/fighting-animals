@@ -2,7 +2,7 @@ module Main exposing (Model, Msg, main)
 
 import Browser exposing (Document)
 import Browser.Events
-import Content.Skills as Skills
+import Content.Animals as Animals
 import Engine.Animal as Animal exposing (Animal)
 import Engine.Skill as Skill exposing (SkillEffect)
 import Html
@@ -28,14 +28,8 @@ type alias Model =
 init : String -> ( Model, Cmd msg )
 init pageUrl =
     ( Model
-        (Animal.new "Player"
-            |> Animal.addSkill Skills.debuffSkill
-            |> Animal.addSkill Skills.buffSkill
-            |> Animal.addSkill Skills.basicSkill
-        )
-        (Animal.new "Enemy"
-            |> Animal.addSkill Skills.enemyBasicSkill
-        )
+        Animals.playerPanda
+        Animals.enemySloth
         []
         View.Modal.new
         pageUrl
