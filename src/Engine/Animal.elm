@@ -1,4 +1,4 @@
-module Engine.Animal exposing (Animal, init, tickSkills, useAllSkills, useSkillAtIndex, withName, withSkill)
+module Engine.Animal exposing (Animal, init, tickSkills, useAllSkills, useSkillAtIndex, withHealth, withName, withSkill)
 
 import Engine.Skill as Skill exposing (Skill, SkillEffect)
 
@@ -6,6 +6,7 @@ import Engine.Skill as Skill exposing (Skill, SkillEffect)
 type alias Animal =
     { name : String
     , skills : List Skill
+    , health : ( Int, Int )
     }
 
 
@@ -17,7 +18,7 @@ type alias Animal =
 -}
 init : Animal
 init =
-    Animal "Unnamed animal" []
+    Animal "Unnamed animal" [] ( 100, 100 )
 
 
 {-| Set animal name
@@ -39,6 +40,19 @@ withName name animal =
 withSkill : Skill -> Animal -> Animal
 withSkill skill animal =
     { animal | skills = animal.skills ++ [ skill ] }
+
+
+{-| Set animal max health
+
+only health max is changed, this means reducing max below the default of 100
+will result in "overheal" ie. (100, 50)
+
+values are clamped to 1 or higher
+
+-}
+withHealth : Int -> Animal -> Animal
+withHealth maxHealth animal =
+    { animal | health = ( Tuple.first animal.health, max 1 maxHealth ) }
 
 
 

@@ -4,7 +4,7 @@ import Content.Skills
 import Engine.Animal exposing (Animal)
 import Engine.Skill
 import Expect
-import Fuzz exposing (string)
+import Fuzz exposing (int, string)
 import Test exposing (Test, describe, fuzz, test)
 
 
@@ -38,6 +38,18 @@ animalBuilder =
                         [ Content.Skills.basicSkill
                         , Content.Skills.buffSkill
                         ]
+        , fuzz int "New animal with random health, only max health should be changed, current health should stay at the default 100. min allowed is 1" <|
+            \randomInt ->
+                Engine.Animal.init
+                    |> Engine.Animal.withHealth randomInt
+                    |> .health
+                    |> Expect.equal
+                        (if randomInt <= 0 then
+                            ( 100, 1 )
+
+                         else
+                            ( 100, randomInt )
+                        )
         ]
 
 
