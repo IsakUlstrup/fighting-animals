@@ -1,6 +1,6 @@
-module Engine.Animal exposing (Animal, healthPercentage, init, tickSkills, useAllSkills, useSkillAtIndex, withHealth, withName, withSkill)
+module Engine.Animal exposing (Animal, applySkillEffect, healthPercentage, init, tickSkills, useAllSkills, useSkillAtIndex, withHealth, withName, withSkill)
 
-import Engine.Skill as Skill exposing (Skill, SkillEffect)
+import Engine.Skill as Skill exposing (Skill, SkillEffect(..))
 
 
 type alias Animal =
@@ -56,6 +56,17 @@ withHealth maxHealth animal =
 
 
 
+---- GENERAL STATE STUFF ----
+
+
+{-| apply hit
+-}
+hit : Int -> Animal -> Animal
+hit hitPwr animal =
+    { animal | health = Tuple.mapFirst ((\h -> h - max 0 hitPwr) >> max 0) animal.health }
+
+
+
 ---- SKILLS ----
 
 
@@ -93,6 +104,22 @@ tickSkills dt animal =
                 |> Tuple.mapSecond (List.filterMap identity)
     in
     ( { animal | skills = skills }, effects )
+
+
+
+---- SKILL EFFECTS ----
+
+
+{-| Apply skill effect, only works with hits for now
+-}
+applySkillEffect : SkillEffect -> Animal -> Animal
+applySkillEffect effect animal =
+    case effect of
+        Hit pwr ->
+            hit pwr animal
+
+        _ ->
+            animal
 
 
 

@@ -1,4 +1,4 @@
-module Animal exposing (animalBuilder, animalSkillsTests, animalView)
+module Animal exposing (animalBuilder, animalSkillEffects, animalSkillsTests, animalView)
 
 import Content.Skills
 import Engine.Animal exposing (Animal)
@@ -128,6 +128,27 @@ animalSkillsTests =
                         [ Engine.Skill.Hit 12
                         , Engine.Skill.Buff 25
                         ]
+        ]
+
+
+animalSkillEffects : Test
+animalSkillEffects =
+    describe "Skill effects"
+        [ fuzz int "Apply hit skill effect with random power" <|
+            \randomInt ->
+                Engine.Animal.init
+                    |> Engine.Animal.applySkillEffect (Engine.Skill.Hit randomInt)
+                    |> .health
+                    |> Expect.equal
+                        (if randomInt >= 100 then
+                            ( 0, 100 )
+
+                         else if randomInt < 0 then
+                            ( 100, 100 )
+
+                         else
+                            ( 100 - randomInt, 100 )
+                        )
         ]
 
 
