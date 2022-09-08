@@ -60,8 +60,8 @@ update msg model =
                     model.enemyAnimal |> Animal.tickSkills dt
             in
             ( { model
-                | playerAnimal = player
-                , enemyAnimal = enemy |> Animal.useAllSkills
+                | playerAnimal = player |> Animal.applySkillEffects enemyEffects
+                , enemyAnimal = enemy |> Animal.useAllSkills |> Animal.applySkillEffects effects
                 , combatLog = List.map (\e -> ( True, e )) effects ++ List.map (\e -> ( False, e )) enemyEffects ++ model.combatLog |> List.take 50
               }
             , Cmd.none
