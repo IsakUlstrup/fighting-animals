@@ -1,4 +1,4 @@
-module View.ElmHtml exposing (viewAnimal, viewCombatLog, viewOpposingAnimal, viewSmallSkills, viewStatusBar)
+module View.ElmHtml exposing (viewAnimal, viewCombatLog, viewOpposingAnimal, viewStatusBar)
 
 import Engine.Animal exposing (Animal)
 import Engine.Skill as Skill exposing (Skill, SkillEffect)

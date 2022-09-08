@@ -54,10 +54,18 @@ update msg model =
         Tick dt ->
             let
                 ( player, effects ) =
-                    model.playerAnimal |> Animal.tickSkills dt
+                    if Animal.isAlive model.playerAnimal then
+                        model.playerAnimal |> Animal.tickSkills dt
+
+                    else
+                        ( model.playerAnimal, [] )
 
                 ( enemy, enemyEffects ) =
-                    model.enemyAnimal |> Animal.tickSkills dt
+                    if Animal.isAlive model.enemyAnimal then
+                        model.enemyAnimal |> Animal.tickSkills dt
+
+                    else
+                        ( model.enemyAnimal, [] )
             in
             ( { model
                 | playerAnimal = player |> Animal.applySkillEffects enemyEffects
