@@ -5,8 +5,9 @@ import Browser.Events
 import Content.Animals as Animals
 import Engine.Animal as Animal exposing (Animal)
 import Engine.Skill as Skill exposing (SkillEffect)
-import Html
+import Html exposing (Html)
 import Html.Attributes
+import Html.Events
 import View.ElmHtml
 import View.Modal exposing (Modal)
 import View.Svg
@@ -43,9 +44,32 @@ init pageUrl =
 
 type Msg
     = Tick Int
+    | Restart
     | UseSkill Int
     | ShowQrModal
     | HideModal
+
+
+gameOverCheck : Model -> Model
+gameOverCheck model =
+    if Animal.isAlive model.playerAnimal |> not then
+        -- player loss
+        { model
+            | modal =
+                model.modal
+                    |> View.Modal.show "Game over" (gameOverModal False)
+        }
+
+    else if Animal.isAlive model.enemyAnimal |> not then
+        -- player win
+        { model
+            | modal =
+                model.modal
+                    |> View.Modal.show "Game over" (gameOverModal True)
+        }
+
+    else
+        model
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -72,8 +96,12 @@ update msg model =
                 , enemyAnimal = enemy |> Animal.useAllSkills |> Animal.applySkillEffects effects
                 , combatLog = List.map (\e -> ( True, e )) effects ++ List.map (\e -> ( False, e )) enemyEffects ++ model.combatLog |> List.take 50
               }
+                |> gameOverCheck
             , Cmd.none
             )
+
+        Restart ->
+            init model.pageUrl
 
         UseSkill index ->
             ( { model | playerAnimal = model.playerAnimal |> Animal.useSkillAtIndex index }, Cmd.none )
@@ -93,6 +121,24 @@ update msg model =
 
 
 -- VIEW
+
+
+gameOverModal : Bool -> Html Msg
+gameOverModal win =
+    let
+        modalBody : String
+        modalBody =
+            if win then
+                "You won!"
+
+            else
+                "You lost :("
+    in
+    Html.p []
+        [ Html.text modalBody
+        , Html.br [] []
+        , Html.button [ Html.Events.onClick Restart ] [ Html.text "Restart" ]
+        ]
 
 
 view : Model -> Document Msg
@@ -116,7 +162,10 @@ view model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    if List.all Skill.isReady model.playerAnimal.skills && List.all Skill.isReady model.enemyAnimal.skills then
+    if
+        List.all Skill.isReady model.playerAnimal.skills
+            && List.all Skill.isReady model.enemyAnimal.skills
+    then
         Sub.none
 
     else
