@@ -30,7 +30,13 @@ fist =
 
 char : Char -> Svg msg
 char c =
-    Svg.text_ [] [ Svg.text <| String.fromChar c ]
+    Svg.text_
+        [ Svg.Attributes.y "50%"
+        , Svg.Attributes.x "50%"
+        , Svg.Attributes.textAnchor "middle"
+        , Svg.Attributes.fontSize "20px"
+        ]
+        [ Svg.text <| String.fromChar c ]
 
 
 viewSpinner : Int -> Svg msg -> Svg msg
