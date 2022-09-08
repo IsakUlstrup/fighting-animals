@@ -1,4 +1,4 @@
-module Engine.Animal exposing (Animal, applySkillEffect, applySkillEffects, healthPercentage, init, tickSkills, useAllSkills, useSkillAtIndex, withHealth, withName, withSkill)
+module Engine.Animal exposing (Animal, applySkillEffect, applySkillEffects, healthPercentage, init, isAlive, tickSkills, useAllSkills, useSkillAtIndex, withHealth, withName, withSkill)
 
 import Engine.Skill as Skill exposing (Skill, SkillEffect(..))
 
@@ -64,6 +64,13 @@ withHealth maxHealth animal =
 hit : Int -> Animal -> Animal
 hit hitPwr animal =
     { animal | health = Tuple.mapFirst ((\h -> h - max 0 hitPwr) >> max 0) animal.health }
+
+
+{-| Is animal alive, current health above 0
+-}
+isAlive : Animal -> Bool
+isAlive animal =
+    Tuple.first animal.health > 0
 
 
 
