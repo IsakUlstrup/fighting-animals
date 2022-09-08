@@ -94,7 +94,7 @@ view model =
         [ View.Modal.viewModal HideModal model.modal
         , Html.main_ [ Html.Attributes.id "app" ]
             [ View.ElmHtml.viewStatusBar ShowQrModal
-            , View.ElmHtml.viewSmallSkills model.enemyAnimal.skills
+            , View.ElmHtml.viewOpposingAnimal model.enemyAnimal
             , View.ElmHtml.viewCombatLog model.combatLog
             , View.ElmHtml.viewAnimal model.playerAnimal UseSkill
             ]

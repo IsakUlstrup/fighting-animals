@@ -1,4 +1,4 @@
-module View.ElmHtml exposing (viewAnimal, viewCombatLog, viewSmallSkills, viewStatusBar)
+module View.ElmHtml exposing (viewAnimal, viewCombatLog, viewOpposingAnimal, viewSmallSkills, viewStatusBar)
 
 import Engine.Animal exposing (Animal)
 import Engine.Skill as Skill exposing (Skill, SkillEffect)
@@ -111,6 +111,14 @@ viewSmallSkills skills =
 viewSkills : List Skill -> (Int -> msg) -> Html msg
 viewSkills skills useSkill =
     div [ class "skill-buttons" ] (List.indexedMap (\i -> viewSkillButton (useSkill i)) skills)
+
+
+viewOpposingAnimal : Animal -> Html msg
+viewOpposingAnimal animal =
+    div [ class "animal opposing" ]
+        [ View.Svg.viewSpinner (Engine.Animal.healthPercentage animal) (View.Svg.char '🦥')
+        , viewSmallSkills animal.skills
+        ]
 
 
 viewAnimal : Animal -> (Int -> msg) -> Html msg

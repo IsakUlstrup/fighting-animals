@@ -57,18 +57,6 @@ body
     .enemy-effect
         color: red
 
-.skill-buttons
-    display: flex
-    flex-direction: column
-    gap: 0.7rem
-
-.skill-buttons.small
-    gap: 0.3rem
-
-.skill-buttons.enemy
-    margin-bottom: auto
-    align-items: flex-end
-
 @include modal.modal($panel-color)
 @include skill.skill-button($panel-color, $hit-skill-color, $buff-skill-color, $debuff-skill-color)
 @include animal.animal($text-color)
