@@ -1,4 +1,4 @@
-module Animal exposing (animalBuilder, animalSkillsTests)
+module Animal exposing (animalBuilder, animalSkillsTests, animalView)
 
 import Content.Skills
 import Engine.Animal exposing (Animal)
@@ -128,4 +128,16 @@ animalSkillsTests =
                         [ Engine.Skill.Hit 12
                         , Engine.Skill.Buff 25
                         ]
+        ]
+
+
+animalView : Test
+animalView =
+    describe "View helpers"
+        [ test "Health percentage" <|
+            \_ ->
+                Engine.Animal.init
+                    |> Engine.Animal.healthPercentage
+                    |> Expect.equal
+                        100
         ]

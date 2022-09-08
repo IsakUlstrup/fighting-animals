@@ -117,7 +117,7 @@ viewAnimal : Animal -> (Int -> msg) -> Html msg
 viewAnimal animal useSkillMsg =
     div [ class "animal" ]
         [ div [ class "status" ]
-            [ View.Svg.viewSpinner 100 (View.Svg.char '🐼')
+            [ View.Svg.viewSpinner (Engine.Animal.healthPercentage animal) (View.Svg.char '🐼')
             , h5 [] [ text animal.name ]
             ]
         , viewSkills animal.skills useSkillMsg
