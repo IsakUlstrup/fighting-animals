@@ -22,6 +22,16 @@ animalBuilder =
                 Engine.Animal.init
                     |> .skills
                     |> Expect.equal []
+        , test "New animal, with skills. Order should be chronological" <|
+            \_ ->
+                Engine.Animal.init
+                    |> Engine.Animal.withSkill Content.Skills.basicSkill
+                    |> Engine.Animal.withSkill Content.Skills.buffSkill
+                    |> .skills
+                    |> Expect.equal
+                        [ Content.Skills.basicSkill
+                        , Content.Skills.buffSkill
+                        ]
         ]
 
 
