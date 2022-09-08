@@ -46,6 +46,20 @@ viewSpinner percentage icon =
         , Svg.Attributes.class "radial-progress"
         ]
         [ Svg.circle
+            [ Svg.Attributes.stroke "white"
+            , Svg.Attributes.class "trail"
+            , Svg.Attributes.fill "none"
+            , Svg.Attributes.transform "rotate(90, 16, 16)"
+            , Svg.Attributes.strokeWidth "2.4"
+            , Svg.Attributes.strokeLinecap "round"
+            , Svg.Attributes.cx "16"
+            , Svg.Attributes.cy "16"
+            , Svg.Attributes.r "15.9155"
+            , Svg.Attributes.shapeRendering "geometricPrecision"
+            , Svg.Attributes.strokeDasharray ((clamp 0 100 percentage |> String.fromInt) ++ ", 100")
+            ]
+            []
+        , Svg.circle
             [ Svg.Attributes.stroke "magenta"
             , Svg.Attributes.fill "none"
             , Svg.Attributes.transform "rotate(90, 16, 16)"
