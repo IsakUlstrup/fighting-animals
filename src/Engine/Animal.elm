@@ -1,4 +1,4 @@
-module Engine.Animal exposing (Animal, addSkill, new, tickSkills, useAllSkills, useSkillAtIndex)
+module Engine.Animal exposing (Animal, init, tickSkills, useAllSkills, useSkillAtIndex, withName, withSkill)
 
 import Engine.Skill as Skill exposing (Skill, SkillEffect)
 
@@ -9,17 +9,28 @@ type alias Animal =
     }
 
 
-{-| Create a new animal with given name
+
+---- BUILDER ----
+
+
+{-| Create a new animal with default values
 -}
-new : String -> Animal
-new name =
-    Animal name []
+init : Animal
+init =
+    Animal "Unnamed animal" []
+
+
+{-| Set animal name
+-}
+withName : String -> Animal -> Animal
+withName name animal =
+    { animal | name = name }
 
 
 {-| Add a skill to animal skills
 -}
-addSkill : Skill -> Animal -> Animal
-addSkill skill animal =
+withSkill : Skill -> Animal -> Animal
+withSkill skill animal =
     { animal | skills = animal.skills ++ [ skill ] }
 
 

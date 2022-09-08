@@ -1,4 +1,4 @@
-module Animal exposing (animalSkillsTests, newAnimalTests)
+module Animal exposing (animalBuilder, animalSkillsTests)
 
 import Content.Skills
 import Engine.Animal exposing (Animal)
@@ -8,20 +8,18 @@ import Fuzz exposing (string)
 import Test exposing (Test, describe, fuzz, test)
 
 
-newAnimalTests : Test
-newAnimalTests =
-    describe "New animal helpers"
-        [ describe "New animal"
-            [ fuzz string "new animal with fuzz name. Verify name" <|
-                \randomString ->
-                    randomString
-                        |> Engine.Animal.new
-                        |> .name
-                        |> Expect.equal randomString
-            ]
+animalBuilder : Test
+animalBuilder =
+    describe "Animal builder"
+        [ fuzz string "new animal with fuzz name. Verify name" <|
+            \randomString ->
+                Engine.Animal.init
+                    |> Engine.Animal.withName randomString
+                    |> .name
+                    |> Expect.equal randomString
         , test "New animal, with no skills" <|
             \_ ->
-                Engine.Animal.new "New animal"
+                Engine.Animal.init
                     |> .skills
                     |> Expect.equal []
         ]
@@ -29,9 +27,9 @@ newAnimalTests =
 
 animalWithSkills : Animal
 animalWithSkills =
-    Engine.Animal.new "New animal"
-        |> Engine.Animal.addSkill Content.Skills.basicSkill
-        |> Engine.Animal.addSkill Content.Skills.buffSkill
+    Engine.Animal.init
+        |> Engine.Animal.withSkill Content.Skills.basicSkill
+        |> Engine.Animal.withSkill Content.Skills.buffSkill
 
 
 animalSkillsTests : Test
@@ -39,15 +37,15 @@ animalSkillsTests =
     describe "Animal skills"
         [ test "Add a skill" <|
             \_ ->
-                Engine.Animal.new "New animal"
-                    |> Engine.Animal.addSkill Content.Skills.basicSkill
+                Engine.Animal.init
+                    |> Engine.Animal.withSkill Content.Skills.basicSkill
                     |> .skills
                     |> Expect.equal [ Content.Skills.basicSkill ]
         , test "Add multiple skills, latest addition should be last" <|
             \_ ->
-                Engine.Animal.new "New animal"
-                    |> Engine.Animal.addSkill Content.Skills.basicSkill
-                    |> Engine.Animal.addSkill Content.Skills.buffSkill
+                Engine.Animal.init
+                    |> Engine.Animal.withSkill Content.Skills.basicSkill
+                    |> Engine.Animal.withSkill Content.Skills.buffSkill
                     |> .skills
                     |> Expect.equal
                         [ Content.Skills.basicSkill
