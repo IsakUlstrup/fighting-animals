@@ -16,7 +16,13 @@ animalBuilder =
                 Engine.Animal.init
                     |> Engine.Animal.withName randomString
                     |> .name
-                    |> Expect.equal randomString
+                    |> Expect.equal
+                        (if randomString == "" then
+                            "Unnamed animal"
+
+                         else
+                            randomString
+                        )
         , test "New animal, with no skills" <|
             \_ ->
                 Engine.Animal.init

@@ -21,10 +21,17 @@ init =
 
 
 {-| Set animal name
+
+Providing an empty name return unchanged animal with default name
+
 -}
 withName : String -> Animal -> Animal
 withName name animal =
-    { animal | name = name }
+    if String.isEmpty name then
+        animal
+
+    else
+        { animal | name = name }
 
 
 {-| Add a skill to animal skills
