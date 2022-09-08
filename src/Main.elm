@@ -96,7 +96,7 @@ view model =
             [ View.ElmHtml.viewStatusBar ShowQrModal
             , View.ElmHtml.viewSmallSkills model.enemyAnimal.skills
             , View.ElmHtml.viewCombatLog model.combatLog
-            , View.ElmHtml.viewSkills model.playerAnimal.skills UseSkill
+            , View.ElmHtml.viewAnimal model.playerAnimal UseSkill
             ]
         ]
     }

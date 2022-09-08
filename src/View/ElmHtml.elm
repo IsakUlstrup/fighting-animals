@@ -1,5 +1,6 @@
-module View.ElmHtml exposing (viewCombatLog, viewSkills, viewSmallSkills, viewStatusBar)
+module View.ElmHtml exposing (viewAnimal, viewCombatLog, viewSmallSkills, viewStatusBar)
 
+import Engine.Animal exposing (Animal)
 import Engine.Skill as Skill exposing (Skill, SkillEffect)
 import Html exposing (Attribute, Html, button, div, h5, li, p, text, ul)
 import Html.Attributes exposing (class)
@@ -110,3 +111,14 @@ viewSmallSkills skills =
 viewSkills : List Skill -> (Int -> msg) -> Html msg
 viewSkills skills useSkill =
     div [ class "skill-buttons" ] (List.indexedMap (\i -> viewSkillButton (useSkill i)) skills)
+
+
+viewAnimal : Animal -> (Int -> msg) -> Html msg
+viewAnimal animal useSkillMsg =
+    div [ class "animal" ]
+        [ div [ class "status" ]
+            [ View.Svg.viewSpinner 100 (View.Svg.char '🐼')
+            , h5 [] [ text animal.name ]
+            ]
+        , viewSkills animal.skills useSkillMsg
+        ]

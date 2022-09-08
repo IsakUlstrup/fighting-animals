@@ -1,6 +1,7 @@
 module View.Svg exposing
     ( arrowDown
     , arrowUp
+    , char
     , fist
     , qrCodeView
     , viewSpinner
@@ -25,6 +26,11 @@ arrowDown =
 fist : Svg msg
 fist =
     Svg.path [ Svg.Attributes.d "M 5.192 19.296 L 15.278 19.266 L 15.025 10.462 L 17.702 2.93 L 16 2.185 L 13.884 7.77 L 13.549 7.676 L 15.49 1.845 L 13.207 1.145 L 11.666 7.506 L 12.722 1.003 L 10.568 0.705 L 9.763 7.371 L 9.3 7.362 L 9.895 0.723 L 6.972 0.812 L 7.202 7.555 L 6.426 7.761 L 4.919 6.032 L 6.887 4.042 L 5.885 2.695 L 2.298 6.329 L 5.237 11.337 L 5.192 19.296 Z" ] []
+
+
+char : Char -> Svg msg
+char c =
+    Svg.text_ [] [ Svg.text <| String.fromChar c ]
 
 
 viewSpinner : Int -> Svg msg -> Svg msg

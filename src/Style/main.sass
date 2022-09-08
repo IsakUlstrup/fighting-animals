@@ -1,6 +1,7 @@
 @use "./reset"
 @use "./modal"
 @use "./skill"
+@use "./animal"
 
 $hit-skill-color: rgb(225, 33, 100)
 $buff-skill-color: rgb(19, 157, 162)
@@ -69,3 +70,4 @@ body
 
 @include modal.modal($panel-color)
 @include skill.skill-button($panel-color, $hit-skill-color, $buff-skill-color, $debuff-skill-color)
+@include animal.animal()
