@@ -1,4 +1,4 @@
-module Engine.Animal exposing (Animal, applySkillEffect, healthPercentage, init, tickSkills, useAllSkills, useSkillAtIndex, withHealth, withName, withSkill)
+module Engine.Animal exposing (Animal, applySkillEffect, applySkillEffects, healthPercentage, init, tickSkills, useAllSkills, useSkillAtIndex, withHealth, withName, withSkill)
 
 import Engine.Skill as Skill exposing (Skill, SkillEffect(..))
 
@@ -120,6 +120,13 @@ applySkillEffect effect animal =
 
         _ ->
             animal
+
+
+{-| Apply a list of skill effects, only works with hits for now
+-}
+applySkillEffects : List SkillEffect -> Animal -> Animal
+applySkillEffects effects animal =
+    List.foldl applySkillEffect animal effects
 
 
 
