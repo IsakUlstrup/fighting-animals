@@ -2,7 +2,6 @@ module Content.Skills exposing
     ( basicSkill
     , buffSkill
     , debuffSkill
-    , enemyBasicSkill
     )
 
 import Engine.Skill as Skill exposing (Skill)
@@ -31,10 +30,3 @@ debuffSkill =
     Skill.initDebuff 50
         |> Skill.withName "Debuff"
         |> Skill.withDescription "Applies a debuff"
-
-
-enemyBasicSkill : Skill
-enemyBasicSkill =
-    Skill.initHit 5
-        |> Skill.withCooldown 4000
-        |> Skill.withUseTime 1000

@@ -17,4 +17,3 @@ enemySloth : Animal
 enemySloth =
     Animal.init
         |> Animal.withName "Sloth"
-        |> Animal.withSkill Skills.enemyBasicSkill
