@@ -2,6 +2,7 @@
 @use "./modal"
 @use "./skill"
 @use "./animal"
+@use "./button"
 
 $hit-skill-color: rgb(225, 33, 100)
 $buff-skill-color: rgb(19, 157, 162)
@@ -41,6 +42,7 @@ body
         flex: auto
         color: $text-color
         text-align: center
+    @include button.button($panel-color)
 
 .combat-log
     list-style: none

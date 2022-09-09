@@ -97,9 +97,9 @@ viewCombatLog combatLog =
 viewStatusBar : msg -> Html msg
 viewStatusBar showQrMsg =
     div [ class "status-bar" ]
-        [ button [] [ text "<" ]
+        [ button [ Html.Attributes.class "button" ] [ text "<" ]
         , h5 [] [ text "Area name" ]
-        , Html.button [ Html.Events.onClick showQrMsg ] [ Html.text "share" ]
+        , Html.button [ Html.Events.onClick showQrMsg, Html.Attributes.class "button" ] [ Html.text "share" ]
         ]
 
 
