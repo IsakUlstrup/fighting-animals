@@ -89,7 +89,7 @@ animalSkillsTests =
                     |> List.map .state
                     |> Expect.equal
                         [ Engine.Skill.Ready
-                        , Engine.Skill.Active ( 0, Content.Skills.buffSkill.useTime )
+                        , Engine.Skill.Active Content.Skills.buffSkill.useTime
                         ]
         , test "Use all skills in a list of ready skills" <|
             \_ ->
@@ -100,8 +100,8 @@ animalSkillsTests =
                     |> .skills
                     |> List.map .state
                     |> Expect.equal
-                        [ Engine.Skill.Active ( 0, Content.Skills.basicSkill.useTime )
-                        , Engine.Skill.Active ( 0, Content.Skills.buffSkill.useTime )
+                        [ Engine.Skill.Active Content.Skills.basicSkill.useTime
+                        , Engine.Skill.Active Content.Skills.buffSkill.useTime
                         ]
         , test "Use skill at index 5 (out of bounds) in a list of ready skills, should return unchanged list" <|
             \_ ->

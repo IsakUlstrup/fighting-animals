@@ -29,8 +29,8 @@ type alias Skill =
 
 type SkillState
     = Ready
-    | Cooling ( Int, Int )
-    | Active ( Int, Int )
+    | Cooling Int
+    | Active Int
 
 
 type SkillEffect
@@ -55,7 +55,7 @@ new name description cooldownTime effect useTime =
         description
         (max 0 cooldownTime)
         useTime
-        (Cooling ( 0, max 0 cooldownTime ))
+        (Cooling (max 0 cooldownTime))
         effect
 
 
@@ -95,37 +95,39 @@ withDescription description skill =
 
 
 {-| Set skill cooldown
+
+Resets cooldown time if skill is cooling
+
 -}
 withCooldown : Int -> Skill -> Skill
 withCooldown cooldown skill =
     case skill.state of
-        Cooling ( current, _ ) ->
+        Cooling _ ->
             { skill
                 | cooldownTime = max 0 cooldown
-                , state = Cooling ( current, max 0 cooldown )
+                , state = Cooling <| max 0 cooldown
             }
 
         _ ->
-            { skill
-                | cooldownTime = max 0 cooldown
-            }
+            { skill | cooldownTime = max 0 cooldown }
 
 
 {-| Set skill use time
+
+Resets use time if skill is active
+
 -}
 withUseTime : Int -> Skill -> Skill
 withUseTime useTime skill =
     case skill.state of
-        Active ( current, _ ) ->
+        Active _ ->
             { skill
                 | useTime = max 0 useTime
-                , state = Active ( current, max 0 useTime )
+                , state = Active <| max 0 useTime
             }
 
         _ ->
-            { skill
-                | useTime = max 0 useTime
-            }
+            { skill | useTime = max 0 useTime }
 
 
 
@@ -143,35 +145,29 @@ setReady skill =
 -}
 setCooling : Skill -> Skill
 setCooling skill =
-    { skill | state = Cooling ( 0, skill.cooldownTime ) }
+    { skill | state = Cooling skill.cooldownTime }
 
 
 {-| Set skill state to active with timer at 0
 -}
 setActive : Skill -> Skill
 setActive skill =
-    { skill | state = Active ( 0, skill.useTime ) }
+    { skill | state = Active skill.useTime }
 
 
 {-| tick skill state timers, does not advance state
 -}
 tickState : Int -> Skill -> Skill
 tickState time skill =
-    let
-        -- Update remaining time, negative numbers are ignored, result is capped at max time
-        updateRemaining : Int -> Int -> Int -> Int
-        updateRemaining remaining amount cap =
-            remaining + max 0 amount |> min cap
-    in
     case skill.state of
         Ready ->
             skill
 
-        Cooling ( current, max ) ->
-            { skill | state = Cooling <| ( updateRemaining current time max, max ) }
+        Cooling current ->
+            { skill | state = Cooling <| max 0 <| current - time }
 
-        Active ( current, max ) ->
-            { skill | state = Active <| ( updateRemaining current time max, max ) }
+        Active current ->
+            { skill | state = Active <| max 0 <| current - time }
 
 
 {-| Tick skill with delta time in ms and advance state if neccesary
@@ -182,19 +178,19 @@ tick dt skill =
         Ready ->
             ( skill, Nothing )
 
-        Cooling ( current, max ) ->
-            if current + dt >= max then
+        Cooling current ->
+            if current - max 0 dt <= 0 then
                 ( setReady skill, Nothing )
 
             else
-                ( tickState dt skill, Nothing )
+                ( tickState (max 0 dt) skill, Nothing )
 
-        Active ( current, max ) ->
-            if current + dt >= max then
+        Active current ->
+            if current - max 0 dt <= 0 then
                 ( setCooling skill, Just skill.effect )
 
             else
-                ( tickState dt skill, Nothing )
+                ( tickState (max 0 dt) skill, Nothing )
 
 
 {-| Get skill cooldown progress in percentage 0-100
@@ -207,12 +203,12 @@ useful for rendering
 cooldownPercentage : Skill -> Int
 cooldownPercentage skill =
     case skill.state of
-        Cooling ( current, max ) ->
-            if max == 0 then
+        Cooling current ->
+            if skill.cooldownTime == 0 then
                 100
 
             else
-                (toFloat current / toFloat max) * 100 |> round
+                (toFloat (skill.cooldownTime - current) / toFloat skill.cooldownTime) * 100 |> round
 
         Active _ ->
             100

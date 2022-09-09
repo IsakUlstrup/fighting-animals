@@ -40,17 +40,17 @@ newSkillTests =
                     |> .description
                     |> Expect.equal
                         randomString
-        , fuzz int "new skill with random cooldown, should be (0, > 0)" <|
+        , fuzz int "new skill with random cooldown, should be >0" <|
             \randomInt ->
                 Engine.Skill.initBuff 10
                     |> Engine.Skill.withCooldown randomInt
                     |> .state
                     |> Expect.equal
-                        (if randomInt < 0 then
-                            Engine.Skill.Cooling ( 0, 0 )
+                        (if randomInt <= 0 then
+                            Engine.Skill.Cooling 0
 
                          else
-                            Engine.Skill.Cooling ( 0, randomInt )
+                            Engine.Skill.Cooling randomInt
                         )
         , fuzz int "new skill with random use time" <|
             \randomInt ->
@@ -76,7 +76,7 @@ newSkillTests =
                     |> Engine.Skill.withCooldown 1000
                     |> .state
                     |> Expect.equal
-                        (Engine.Skill.Cooling ( 0, 1000 ))
+                        (Engine.Skill.Cooling 1000)
         , test "new hit skill, check for correct effect" <|
             \_ ->
                 Engine.Skill.initHit 20
@@ -109,14 +109,14 @@ skillInteractionTests =
                     |> Tuple.first
                     |> .state
                     |> Expect.equal
-                        (if randomInt < 0 then
-                            Engine.Skill.Cooling ( 0, 1000 )
+                        (if randomInt <= 0 then
+                            Engine.Skill.Cooling 1000
 
-                         else if randomInt > 1000 then
+                         else if randomInt >= 1000 then
                             Engine.Skill.Ready
 
                          else
-                            Engine.Skill.Cooling ( randomInt, 1000 )
+                            Engine.Skill.Cooling (1000 - randomInt)
                         )
         , fuzz int "Tick active skill by random delta time, verify skill effect" <|
             \randomInt ->
@@ -143,14 +143,14 @@ skillInteractionTests =
                     |> Tuple.first
                     |> .state
                     |> Expect.equal
-                        (if clamp 0 1000 randomInt1 + clamp 0 1000 randomInt2 < 0 then
-                            Engine.Skill.Cooling ( 0, 1000 )
+                        (if clamp 0 1000 randomInt1 + clamp 0 1000 randomInt2 <= 0 then
+                            Engine.Skill.Cooling 1000
 
                          else if clamp 0 1000 randomInt1 + clamp 0 1000 randomInt2 >= 1000 then
                             Engine.Skill.Ready
 
                          else
-                            Engine.Skill.Cooling ( clamp 0 1000 randomInt1 + clamp 0 1000 randomInt2, 1000 )
+                            Engine.Skill.Cooling (1000 - (clamp 0 1000 randomInt1 + clamp 0 1000 randomInt2))
                         )
         , fuzz int "Is skill ready?" <|
             \randomInt ->
@@ -171,10 +171,10 @@ skillInteractionTests =
                     |> .state
                     |> Expect.equal
                         (if randomInt >= 1000 then
-                            Engine.Skill.Active ( 0, 600 )
+                            Engine.Skill.Active 600
 
                          else
-                            Engine.Skill.Cooling ( clamp 0 1000 randomInt, 1000 )
+                            Engine.Skill.Cooling (1000 - clamp 0 1000 randomInt)
                         )
         ]
 
