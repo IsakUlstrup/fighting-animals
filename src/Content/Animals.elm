@@ -16,4 +16,4 @@ playerPanda =
 enemySloth : Animal
 enemySloth =
     Animal.init
-        |> Animal.withName "Sloth"
+        |> Animal.withName "Tree"

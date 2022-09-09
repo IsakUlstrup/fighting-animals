@@ -117,7 +117,7 @@ viewOpposingAnimal : Animal -> Html msg
 viewOpposingAnimal animal =
     div [ class "animal opposing" ]
         [ viewSmallSkills animal.skills
-        , View.Svg.viewSpinner (Engine.Animal.healthPercentage animal) (View.Svg.char '🦥')
+        , View.Svg.viewSpinner (Engine.Animal.healthPercentage animal) (View.Svg.char '🌲')
         ]
 
 
