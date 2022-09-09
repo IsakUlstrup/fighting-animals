@@ -149,7 +149,8 @@ view model =
         , Html.main_ [ Html.Attributes.id "app" ]
             [ View.ElmHtml.viewStatusBar ShowQrModal
             , View.ElmHtml.viewOpposingAnimal model.enemyAnimal
-            , View.ElmHtml.viewCombatLog model.combatLog
+
+            -- , View.ElmHtml.viewCombatLog model.combatLog
             , View.ElmHtml.viewAnimal model.playerAnimal UseSkill
             ]
         ]

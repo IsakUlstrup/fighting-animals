@@ -22,7 +22,7 @@
     .animal
         display: flex
         flex-direction: column
-        gap: 2rem
+        gap: 1rem
         color: $text-color
         animation: slide-in-bottom 0.3s $easing-function forwards
 
@@ -55,9 +55,13 @@
     .animal.opposing
         flex-direction: row
         align-items: center
-        justify-content: flex-end
+        flex: auto
+        justify-content: center
         gap: 0.5rem
         animation: slide-in-side 0.5s $easing-function forwards
+        .radial-progress
+            flex: 10rem 0 0
+            border-radius: 9999rem
         .radial-progress circle
             stroke: red
             transition: 0.3s

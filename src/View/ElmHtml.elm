@@ -1,8 +1,8 @@
-module View.ElmHtml exposing (viewAnimal, viewCombatLog, viewOpposingAnimal, viewStatusBar)
+module View.ElmHtml exposing (viewAnimal, viewOpposingAnimal, viewStatusBar)
 
 import Engine.Animal exposing (Animal)
-import Engine.Skill as Skill exposing (Skill, SkillEffect)
-import Html exposing (Attribute, Html, button, div, h5, li, p, text, ul)
+import Engine.Skill as Skill exposing (Skill)
+import Html exposing (Attribute, Html, button, div, h5, p, text)
 import Html.Attributes exposing (class)
 import Html.Events
 import Svg exposing (Svg)
@@ -76,22 +76,20 @@ viewSkillButton clickMsg skill =
         ]
 
 
-viewSkillEffect : ( Bool, SkillEffect ) -> Html msg
-viewSkillEffect ( player, effect ) =
-    li
-        [ class <|
-            if player then
-                "player-effect"
 
-            else
-                "enemy-effect"
-        ]
-        [ text <| Skill.effectToString effect ]
-
-
-viewCombatLog : List ( Bool, SkillEffect ) -> Html msg
-viewCombatLog combatLog =
-    ul [ class "combat-log" ] (List.map viewSkillEffect combatLog)
+-- viewSkillEffect : ( Bool, SkillEffect ) -> Html msg
+-- viewSkillEffect ( player, effect ) =
+--     li
+--         [ class <|
+--             if player then
+--                 "player-effect"
+--             else
+--                 "enemy-effect"
+--         ]
+--         [ text <| Skill.effectToString effect ]
+-- viewCombatLog : List ( Bool, SkillEffect ) -> Html msg
+-- viewCombatLog combatLog =
+--     ul [ class "combat-log" ] (List.map viewSkillEffect combatLog)
 
 
 viewStatusBar : msg -> Html msg
