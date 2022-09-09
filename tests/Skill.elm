@@ -52,13 +52,21 @@ newSkillTests =
                          else
                             Engine.Skill.Cooling randomInt
                         )
-        , fuzz int "new skill with random use time" <|
+        , fuzz int "new skill with random use time, verify by cooling down and using skill" <|
             \randomInt ->
                 Engine.Skill.initBuff 10
                     |> Engine.Skill.withUseTime randomInt
-                    |> .useTime
+                    |> Engine.Skill.tick 5000
+                    |> Tuple.first
+                    |> Engine.Skill.use
+                    |> .state
                     |> Expect.equal
-                        (max 0 randomInt)
+                        (if randomInt <= 0 then
+                            Engine.Skill.Active 0
+
+                         else
+                            Engine.Skill.Active randomInt
+                        )
         , fuzz int "new hit skill with random power, negative numbers should be clamped" <|
             \randomInt ->
                 Engine.Skill.initHit randomInt
