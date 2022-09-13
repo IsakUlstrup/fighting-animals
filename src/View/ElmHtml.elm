@@ -90,12 +90,11 @@ viewSkillButton clickMsg skill =
 --     ul [ class "combat-log" ] (List.map viewSkillEffect combatLog)
 
 
-viewStatusBar : msg -> Html msg
-viewStatusBar showQrMsg =
+viewStatusBar : Html msg
+viewStatusBar =
     div [ class "status-bar" ]
         [ button [ Html.Attributes.class "button" ] [ text "<" ]
         , h5 [] [ text "Area name" ]
-        , Html.button [ Html.Events.onClick showQrMsg, Html.Attributes.class "button" ] [ Html.text "share" ]
         ]
 
 
@@ -121,7 +120,7 @@ viewSkills skills useSkill =
 
 viewResource : Resource ResourceType -> Html msg
 viewResource resource =
-    div []
+    div [ class "resource" ]
         [ text (Content.ResourceType.toString resource.type_)
         , percentageMeter resource.condition
         , percentageMeter (Engine.Resource.healthPercentage resource)
