@@ -1,4 +1,4 @@
-module Engine.Animal exposing (Animal, energyPercentage, init, tickSkills, useAllSkills, useSkillAtIndex, withHealth, withName, withSkill)
+module Engine.Animal exposing (Animal, energyPercentage, init, tickSkills, useAllSkills, useSkillAtIndex, withEnergy, withName, withSkill)
 
 import Engine.Skill as Skill exposing (Skill, SkillEffect)
 
@@ -6,7 +6,7 @@ import Engine.Skill as Skill exposing (Skill, SkillEffect)
 type alias Animal =
     { name : String
     , skills : List Skill
-    , health : ( Int, Int )
+    , energy : ( Int, Int )
     }
 
 
@@ -42,17 +42,17 @@ withSkill skill animal =
     { animal | skills = animal.skills ++ [ skill ] }
 
 
-{-| Set animal max health
+{-| Set animal max energy
 
-only health max is changed, this means reducing max below the default of 100
+only energy max is changed, this means reducing max below the default of 100
 will result in "overheal" ie. (100, 50)
 
 values are clamped to 1 or higher
 
 -}
-withHealth : Int -> Animal -> Animal
-withHealth maxHealth animal =
-    { animal | health = ( Tuple.first animal.health, max 1 maxHealth ) }
+withEnergy : Int -> Animal -> Animal
+withEnergy maxEnergy animal =
+    { animal | energy = ( Tuple.first animal.energy, max 1 maxEnergy ) }
 
 
 
@@ -103,4 +103,4 @@ tickSkills dt animal =
 -}
 energyPercentage : Animal -> Int
 energyPercentage animal =
-    (toFloat (Tuple.first animal.health) / toFloat (Tuple.second animal.health)) * 100 |> round
+    (toFloat (Tuple.first animal.energy) / toFloat (Tuple.second animal.energy)) * 100 |> round

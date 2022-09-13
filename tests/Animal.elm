@@ -38,11 +38,11 @@ animalBuilder =
                         [ Content.Skills.basicSkill
                         , Content.Skills.buffSkill
                         ]
-        , fuzz int "New animal with random health, only max health should be changed, current health should stay at the default 100. min allowed is 1" <|
+        , fuzz int "New animal with random energy, only max energy should be changed, current energy should stay at the default 100. min allowed is 1" <|
             \randomInt ->
                 Engine.Animal.init
-                    |> Engine.Animal.withHealth randomInt
-                    |> .health
+                    |> Engine.Animal.withEnergy randomInt
+                    |> .energy
                     |> Expect.equal
                         (if randomInt <= 0 then
                             ( 100, 1 )
