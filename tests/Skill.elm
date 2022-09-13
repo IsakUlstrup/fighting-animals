@@ -185,4 +185,11 @@ skillViewtests =
                     |> Engine.Skill.useTimePercentage
                     |> Expect.equal
                         50
+        , test "Ready skill use time percentage should be 0" <|
+            \_ ->
+                Engine.Skill.initHit 50
+                    |> Engine.Skill.withUseTime 2000
+                    |> Engine.Skill.useTimePercentage
+                    |> Expect.equal
+                        0
         ]

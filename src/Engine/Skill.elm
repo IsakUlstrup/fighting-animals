@@ -174,7 +174,7 @@ useTimePercentage skill =
                 (toFloat (skill.useTime - current) / toFloat skill.useTime) * 100 |> round
 
         Ready ->
-            100
+            0
 
 
 {-| Skill effect to string, for debug rendering
