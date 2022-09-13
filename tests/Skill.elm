@@ -162,8 +162,8 @@ skillViewtests =
                     |> Tuple.first
                     |> Engine.Skill.useTimePercentage
                     |> Expect.equal
-                        (if randomInt >= max 0 randomInt2 then
-                            100
+                        (if max 0 randomInt >= max 0 randomInt2 then
+                            0
 
                          else
                             intPercentage randomInt randomInt2
