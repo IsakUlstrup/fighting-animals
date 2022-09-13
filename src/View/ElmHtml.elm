@@ -4,7 +4,7 @@ import Content.ResourceType exposing (ResourceType)
 import Engine.Animal exposing (Animal)
 import Engine.Resource exposing (Resource)
 import Engine.Skill as Skill exposing (Skill)
-import Html exposing (Attribute, Html, button, div, h5, meter, p, text)
+import Html exposing (Attribute, Html, button, div, h1, h2, meter, p, strong, text)
 import Html.Attributes exposing (class)
 import Html.Events
 
@@ -14,10 +14,10 @@ skillEffectClass skill =
     class <|
         case skill.state of
             Skill.Active _ ->
-                "skill-active"
+                "active"
 
             Skill.Ready ->
-                "skill-ready"
+                "ready"
 
 
 skillStateClass : Skill -> Attribute msg
@@ -25,31 +25,21 @@ skillStateClass skill =
     class <|
         case skill.effect of
             Skill.Hit _ ->
-                "skill-hit"
+                "hit"
 
             Skill.Buff _ ->
-                "skill-buff"
+                "buff"
 
             Skill.Debuff _ ->
-                "skill-debuff"
+                "debuff"
 
 
-
--- viewSmallSkill : Skill -> Html msg
--- viewSmallSkill skill =
---     div
---         [ class "small-skill"
---         , skillStateClass skill
---         , skillEffectClass skill
---         ]
---         []
-
-
-percentageMeter : Int -> Html msg
-percentageMeter percentage =
+percentageMeter : String -> Int -> Html msg
+percentageMeter title percentage =
     meter
         [ Html.Attributes.max "100"
         , Html.Attributes.value (percentage |> String.fromInt)
+        , Html.Attributes.title (title ++ " (" ++ String.fromInt percentage ++ ")")
         ]
         []
 
@@ -62,10 +52,10 @@ viewSkillButton clickMsg skill =
         , skillStateClass skill
         , skillEffectClass skill
         ]
-        [ percentageMeter (Skill.useTimePercentage skill)
+        [ percentageMeter "Skill use time" (Skill.useTimePercentage skill)
         , div
             [ class "skill-meta" ]
-            [ h5 [] [ text skill.name ]
+            [ strong [] [ text skill.name ]
             , p [] [ text skill.description ]
             ]
         ]
@@ -90,15 +80,13 @@ viewSkillButton clickMsg skill =
 viewStatusBar : Html msg
 viewStatusBar =
     div [ class "status-bar" ]
-        [ button [ Html.Attributes.class "button" ] [ text "<" ]
-        , h5 [] [ text "Area name" ]
+        [ button
+            [ Html.Attributes.class "button"
+            , Html.Attributes.title "Previous area"
+            ]
+            [ text "<" ]
+        , h1 [] [ text "Area name" ]
         ]
-
-
-
--- viewSmallSkills : List Skill -> Html msg
--- viewSmallSkills skills =
---     div [ class "skill-buttons small enemy" ] (List.map viewSmallSkill skills)
 
 
 viewSkills : List Skill -> (Int -> msg) -> Html msg
@@ -106,21 +94,12 @@ viewSkills skills useSkill =
     div [ class "skill-buttons" ] (List.indexedMap (\i -> viewSkillButton (useSkill i)) skills)
 
 
-
--- viewOpposingAnimal : Animal -> Html msg
--- viewOpposingAnimal animal =
---     div [ class "animal opposing" ]
---         [ viewSmallSkills animal.skills
---         , View.Svg.viewSpinner (Engine.Animal.healthPercentage animal) (View.Svg.char '🌲')
---         ]
-
-
 viewResource : Resource ResourceType -> Html msg
 viewResource resource =
     div [ class "resource" ]
-        [ text (Content.ResourceType.toString resource.type_)
-        , percentageMeter resource.condition
-        , percentageMeter (Engine.Resource.healthPercentage resource)
+        [ h2 [] [ text (Content.ResourceType.toString resource.type_) ]
+        , percentageMeter "Resource condition" resource.condition
+        , percentageMeter "Resource health" (Engine.Resource.healthPercentage resource)
         ]
 
 
@@ -128,12 +107,8 @@ viewAnimal : Animal -> (Int -> msg) -> Html msg
 viewAnimal animal useSkillMsg =
     div [ class "animal" ]
         [ div [ class "status" ]
-            [ h5 [] [ text animal.name ]
-            , meter
-                [ Html.Attributes.max (Tuple.second animal.health |> String.fromInt)
-                , Html.Attributes.value (Tuple.first animal.health |> String.fromInt)
-                ]
-                []
+            [ h2 [] [ text animal.name ]
+            , percentageMeter "Player energy" (Engine.Animal.energyPercentage animal)
             ]
         , viewSkills animal.skills useSkillMsg
         ]
