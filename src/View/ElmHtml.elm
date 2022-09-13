@@ -3,11 +3,9 @@ module View.ElmHtml exposing (viewAnimal, viewResource, viewStatusBar)
 import Engine.Animal exposing (Animal)
 import Engine.Resource exposing (Resource)
 import Engine.Skill as Skill exposing (Skill)
-import Html exposing (Attribute, Html, button, div, h5, p, text)
+import Html exposing (Attribute, Html, button, div, h5, meter, p, text)
 import Html.Attributes exposing (class)
 import Html.Events
-import Svg exposing (Svg)
-import View.Svg
 
 
 skillEffectClass : Skill -> Attribute msg
@@ -49,29 +47,26 @@ skillStateClass skill =
 --         []
 
 
+percentageMeter : Int -> Html msg
+percentageMeter percentage =
+    meter
+        [ Html.Attributes.max "100"
+        , Html.Attributes.value (percentage |> String.fromInt)
+        ]
+        []
+
+
 viewSkillButton : msg -> Skill -> Html msg
 viewSkillButton clickMsg skill =
-    let
-        icon : Svg msg
-        icon =
-            case skill.effect of
-                Skill.Hit _ ->
-                    View.Svg.fist
-
-                Skill.Buff _ ->
-                    View.Svg.arrowUp
-
-                Skill.Debuff _ ->
-                    View.Svg.arrowDown
-    in
     Html.button
         [ Html.Events.onClick clickMsg
         , class "skill-button"
         , skillStateClass skill
         , skillEffectClass skill
         ]
-        [ View.Svg.viewSpinner (Skill.cooldownPercentage skill) icon
-        , div [ class "skill-meta" ]
+        [ percentageMeter (Skill.cooldownPercentage skill)
+        , div
+            [ class "skill-meta" ]
             [ h5 [] [ text skill.name ]
             , p [] [ text skill.description ]
             ]
@@ -124,16 +119,24 @@ viewSkills skills useSkill =
 
 
 viewResource : Resource -> Html msg
-viewResource _ =
-    div [] [ text "A resource" ]
+viewResource resource =
+    div []
+        [ text "A resource"
+        , percentageMeter resource.condition
+        , percentageMeter (Engine.Resource.healthPercentage resource)
+        ]
 
 
 viewAnimal : Animal -> (Int -> msg) -> Html msg
 viewAnimal animal useSkillMsg =
     div [ class "animal" ]
         [ div [ class "status" ]
-            [ View.Svg.viewSpinner (Engine.Animal.healthPercentage animal) (View.Svg.char '🐼')
-            , h5 [] [ text animal.name ]
+            [ h5 [] [ text animal.name ]
+            , meter
+                [ Html.Attributes.max (Tuple.second animal.health |> String.fromInt)
+                , Html.Attributes.value (Tuple.first animal.health |> String.fromInt)
+                ]
+                []
             ]
         , viewSkills animal.skills useSkillMsg
         ]

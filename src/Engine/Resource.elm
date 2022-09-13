@@ -1,4 +1,4 @@
-module Engine.Resource exposing (Resource, applySkillEffect, applySkillEffects, isAlive, new)
+module Engine.Resource exposing (Resource, applySkillEffect, applySkillEffects, healthPercentage, isAlive, new)
 
 import Engine.Skill exposing (SkillEffect(..))
 
@@ -55,3 +55,12 @@ applySkillEffect effect resource =
 applySkillEffects : List SkillEffect -> Resource -> Resource
 applySkillEffects effects resource =
     List.foldl applySkillEffect resource effects
+
+
+
+---- VIEW HELPERS ----
+
+
+healthPercentage : Resource -> Int
+healthPercentage resource =
+    (toFloat (Tuple.first resource.health) / toFloat (Tuple.second resource.health)) * 100 |> round
