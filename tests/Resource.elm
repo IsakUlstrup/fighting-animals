@@ -4,7 +4,7 @@ import Engine.Resource
 import Engine.Skill
 import Expect
 import Fuzz exposing (int)
-import Test exposing (Test, describe, fuzz, test)
+import Test exposing (Test, describe, fuzz, fuzz2, test)
 
 
 newResource : Test
@@ -43,4 +43,26 @@ interaction =
                          else
                             ( 100 - randomInt, 100 )
                         )
+        , fuzz2 int int "Apply list of hit skill effects with random power, check health" <|
+            \randomInt randomInt2 ->
+                Engine.Resource.new
+                    |> Engine.Resource.applySkillEffects [ Engine.Skill.Hit randomInt, Engine.Skill.Hit randomInt2 ]
+                    |> .health
+                    |> Expect.equal
+                        (if max 0 randomInt + max 0 randomInt2 >= 100 then
+                            ( 0, 100 )
+
+                         else if max 0 randomInt + max 0 randomInt2 < 0 then
+                            ( 100, 100 )
+
+                         else
+                            ( 100 - (max 0 randomInt + max 0 randomInt2), 100 )
+                        )
+        , fuzz2 int int "Apply list of hit skill effects with random power, check alive predicate" <|
+            \randomInt randomInt2 ->
+                Engine.Resource.new
+                    |> Engine.Resource.applySkillEffects [ Engine.Skill.Hit randomInt, Engine.Skill.Hit randomInt2 ]
+                    |> Engine.Resource.isAlive
+                    |> Expect.equal
+                        (max 0 randomInt + max 0 randomInt2 < 100)
         ]
