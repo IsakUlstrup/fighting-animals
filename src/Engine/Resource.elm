@@ -3,17 +3,18 @@ module Engine.Resource exposing (Resource, applySkillEffect, applySkillEffects, 
 import Engine.Skill exposing (SkillEffect(..))
 
 
-type alias Resource =
+type alias Resource t =
     { condition : Int
     , health : ( Int, Int )
+    , type_ : t
     }
 
 
 {-| Create new resource with default values
 -}
-new : Resource
-new =
-    Resource 0 ( 100, 100 )
+new : t -> Resource t
+new type_ =
+    Resource 0 ( 100, 100 ) type_
 
 
 
@@ -22,14 +23,14 @@ new =
 
 {-| apply hit
 -}
-hit : Int -> Resource -> Resource
+hit : Int -> Resource t -> Resource t
 hit hitPwr resource =
     { resource | health = Tuple.mapFirst ((\h -> h - max 0 hitPwr) >> max 0) resource.health }
 
 
 {-| Is animal alive, current health above 0
 -}
-isAlive : Resource -> Bool
+isAlive : Resource t -> Bool
 isAlive resource =
     Tuple.first resource.health > 0
 
@@ -40,7 +41,7 @@ isAlive resource =
 
 {-| Apply skill effect, only works with hits for now
 -}
-applySkillEffect : SkillEffect -> Resource -> Resource
+applySkillEffect : SkillEffect -> Resource t -> Resource t
 applySkillEffect effect resource =
     case effect of
         Hit pwr ->
@@ -52,7 +53,7 @@ applySkillEffect effect resource =
 
 {-| Apply a list of skill effects, only works with hits for now
 -}
-applySkillEffects : List SkillEffect -> Resource -> Resource
+applySkillEffects : List SkillEffect -> Resource t -> Resource t
 applySkillEffects effects resource =
     List.foldl applySkillEffect resource effects
 
@@ -61,6 +62,6 @@ applySkillEffects effects resource =
 ---- VIEW HELPERS ----
 
 
-healthPercentage : Resource -> Int
+healthPercentage : Resource t -> Int
 healthPercentage resource =
     (toFloat (Tuple.first resource.health) / toFloat (Tuple.second resource.health)) * 100 |> round

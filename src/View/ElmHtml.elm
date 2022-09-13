@@ -1,5 +1,6 @@
 module View.ElmHtml exposing (viewAnimal, viewResource, viewStatusBar)
 
+import Content.ResourceType exposing (ResourceType)
 import Engine.Animal exposing (Animal)
 import Engine.Resource exposing (Resource)
 import Engine.Skill as Skill exposing (Skill)
@@ -118,10 +119,10 @@ viewSkills skills useSkill =
 --         ]
 
 
-viewResource : Resource -> Html msg
+viewResource : Resource ResourceType -> Html msg
 viewResource resource =
     div []
-        [ text "A resource"
+        [ text (Content.ResourceType.toString resource.type_)
         , percentageMeter resource.condition
         , percentageMeter (Engine.Resource.healthPercentage resource)
         ]

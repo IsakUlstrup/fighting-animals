@@ -3,6 +3,8 @@ module Main exposing (Model, Msg, main)
 import Browser exposing (Document)
 import Browser.Events
 import Content.Animals as Animals
+import Content.ResourceType exposing (ResourceType)
+import Content.Resources
 import Engine.Animal as Animal exposing (Animal)
 import Engine.Resource as Resource exposing (Resource)
 import Engine.Skill as Skill exposing (SkillEffect)
@@ -20,7 +22,7 @@ import View.Svg
 
 type alias Model =
     { playerAnimal : Animal
-    , resource : Resource
+    , resource : Resource ResourceType
     , combatLog : List ( Bool, SkillEffect )
     , modal : Modal Msg
     , pageUrl : String
@@ -31,7 +33,7 @@ init : String -> ( Model, Cmd msg )
 init pageUrl =
     ( Model
         Animals.playerPanda
-        Resource.new
+        Content.Resources.oakTree
         []
         View.Modal.new
         pageUrl
