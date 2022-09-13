@@ -4,6 +4,7 @@ import Browser exposing (Document)
 import Browser.Events
 import Content.Animals as Animals
 import Engine.Animal as Animal exposing (Animal)
+import Engine.Resource as Resource exposing (Resource)
 import Engine.Skill as Skill exposing (SkillEffect)
 import Html exposing (Html)
 import Html.Attributes
@@ -19,7 +20,7 @@ import View.Svg
 
 type alias Model =
     { playerAnimal : Animal
-    , enemyAnimal : Animal
+    , resource : Resource
     , combatLog : List ( Bool, SkillEffect )
     , modal : Modal Msg
     , pageUrl : String
@@ -30,7 +31,7 @@ init : String -> ( Model, Cmd msg )
 init pageUrl =
     ( Model
         Animals.playerPanda
-        Animals.enemySloth
+        Resource.new
         []
         View.Modal.new
         pageUrl
@@ -52,15 +53,7 @@ type Msg
 
 gameOverCheck : Model -> Model
 gameOverCheck model =
-    if Animal.isAlive model.playerAnimal |> not then
-        -- player loss
-        { model
-            | modal =
-                model.modal
-                    |> View.Modal.show "Game over" (gameOverModal False)
-        }
-
-    else if Animal.isAlive model.enemyAnimal |> not then
+    if Resource.isAlive model.resource |> not then
         -- player win
         { model
             | modal =
@@ -78,23 +71,12 @@ update msg model =
         Tick dt ->
             let
                 ( player, effects ) =
-                    if Animal.isAlive model.playerAnimal then
-                        model.playerAnimal |> Animal.tickSkills dt
-
-                    else
-                        ( model.playerAnimal, [] )
-
-                ( enemy, enemyEffects ) =
-                    if Animal.isAlive model.enemyAnimal then
-                        model.enemyAnimal |> Animal.tickSkills dt
-
-                    else
-                        ( model.enemyAnimal, [] )
+                    model.playerAnimal |> Animal.tickSkills dt
             in
             ( { model
-                | playerAnimal = player |> Animal.applySkillEffects enemyEffects
-                , enemyAnimal = enemy |> Animal.useAllSkills |> Animal.applySkillEffects effects
-                , combatLog = List.map (\e -> ( True, e )) effects ++ List.map (\e -> ( False, e )) enemyEffects ++ model.combatLog |> List.take 50
+                | playerAnimal = player
+                , resource = model.resource |> Resource.applySkillEffects effects
+                , combatLog = List.map (\e -> ( True, e )) effects ++ model.combatLog |> List.take 50
               }
                 |> gameOverCheck
             , Cmd.none
@@ -148,9 +130,7 @@ view model =
         [ View.Modal.viewModal HideModal model.modal
         , Html.main_ [ Html.Attributes.id "app" ]
             [ View.ElmHtml.viewStatusBar ShowQrModal
-            , View.ElmHtml.viewOpposingAnimal model.enemyAnimal
-
-            -- , View.ElmHtml.viewCombatLog model.combatLog
+            , View.ElmHtml.viewResource model.resource
             , View.ElmHtml.viewAnimal model.playerAnimal UseSkill
             ]
         ]
@@ -163,10 +143,7 @@ view model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    if
-        List.all Skill.isReady model.playerAnimal.skills
-            && List.all Skill.isReady model.enemyAnimal.skills
-    then
+    if List.all Skill.isReady model.playerAnimal.skills then
         Sub.none
 
     else

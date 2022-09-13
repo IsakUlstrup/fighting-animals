@@ -1,6 +1,7 @@
-module View.ElmHtml exposing (viewAnimal, viewOpposingAnimal, viewStatusBar)
+module View.ElmHtml exposing (viewAnimal, viewResource, viewStatusBar)
 
 import Engine.Animal exposing (Animal)
+import Engine.Resource exposing (Resource)
 import Engine.Skill as Skill exposing (Skill)
 import Html exposing (Attribute, Html, button, div, h5, p, text)
 import Html.Attributes exposing (class)
@@ -37,14 +38,15 @@ skillStateClass skill =
                 "skill-debuff"
 
 
-viewSmallSkill : Skill -> Html msg
-viewSmallSkill skill =
-    div
-        [ class "small-skill"
-        , skillStateClass skill
-        , skillEffectClass skill
-        ]
-        []
+
+-- viewSmallSkill : Skill -> Html msg
+-- viewSmallSkill skill =
+--     div
+--         [ class "small-skill"
+--         , skillStateClass skill
+--         , skillEffectClass skill
+--         ]
+--         []
 
 
 viewSkillButton : msg -> Skill -> Html msg
@@ -101,9 +103,10 @@ viewStatusBar showQrMsg =
         ]
 
 
-viewSmallSkills : List Skill -> Html msg
-viewSmallSkills skills =
-    div [ class "skill-buttons small enemy" ] (List.map viewSmallSkill skills)
+
+-- viewSmallSkills : List Skill -> Html msg
+-- viewSmallSkills skills =
+--     div [ class "skill-buttons small enemy" ] (List.map viewSmallSkill skills)
 
 
 viewSkills : List Skill -> (Int -> msg) -> Html msg
@@ -111,12 +114,18 @@ viewSkills skills useSkill =
     div [ class "skill-buttons" ] (List.indexedMap (\i -> viewSkillButton (useSkill i)) skills)
 
 
-viewOpposingAnimal : Animal -> Html msg
-viewOpposingAnimal animal =
-    div [ class "animal opposing" ]
-        [ viewSmallSkills animal.skills
-        , View.Svg.viewSpinner (Engine.Animal.healthPercentage animal) (View.Svg.char '🌲')
-        ]
+
+-- viewOpposingAnimal : Animal -> Html msg
+-- viewOpposingAnimal animal =
+--     div [ class "animal opposing" ]
+--         [ viewSmallSkills animal.skills
+--         , View.Svg.viewSpinner (Engine.Animal.healthPercentage animal) (View.Svg.char '🌲')
+--         ]
+
+
+viewResource : Resource -> Html msg
+viewResource _ =
+    div [] [ text "A resource" ]
 
 
 viewAnimal : Animal -> (Int -> msg) -> Html msg

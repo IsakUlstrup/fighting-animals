@@ -1,8 +1,10 @@
-module Resource exposing (newResource)
+module Resource exposing (interaction, newResource)
 
 import Engine.Resource
+import Engine.Skill
 import Expect
-import Test exposing (Test, describe, test)
+import Fuzz exposing (int)
+import Test exposing (Test, describe, fuzz, test)
 
 
 newResource : Test
@@ -20,4 +22,25 @@ newResource =
                     |> .health
                     |> Expect.equal
                         ( 100, 100 )
+        ]
+
+
+interaction : Test
+interaction =
+    describe "Interaction tests"
+        [ fuzz int "apply random hit" <|
+            \randomInt ->
+                Engine.Resource.new
+                    |> Engine.Resource.applySkillEffect (Engine.Skill.Hit randomInt)
+                    |> .health
+                    |> Expect.equal
+                        (if randomInt >= 100 then
+                            ( 0, 100 )
+
+                         else if randomInt <= 0 then
+                            ( 100, 100 )
+
+                         else
+                            ( 100 - randomInt, 100 )
+                        )
         ]

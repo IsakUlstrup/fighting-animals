@@ -1,11 +1,11 @@
-module Animal exposing (animalBuilder, animalSkillEffects, animalSkillsTests, animalState, animalView)
+module Animal exposing (animalBuilder, animalSkillsTests, animalView)
 
 import Content.Skills
 import Engine.Animal exposing (Animal)
 import Engine.Skill
 import Expect
 import Fuzz exposing (int, string)
-import Test exposing (Test, describe, fuzz, fuzz2, test)
+import Test exposing (Test, describe, fuzz, test)
 
 
 animalBuilder : Test
@@ -131,53 +131,48 @@ animalSkillsTests =
         ]
 
 
-animalState : Test
-animalState =
-    describe "Animal state"
-        [ fuzz int "Hit animal with random power, check if alive" <|
-            \randomInt ->
-                Engine.Animal.init
-                    |> Engine.Animal.applySkillEffect (Engine.Skill.Hit randomInt)
-                    |> Engine.Animal.isAlive
-                    |> Expect.equal
-                        (randomInt < 100)
-        ]
 
-
-animalSkillEffects : Test
-animalSkillEffects =
-    describe "Skill effects"
-        [ fuzz int "Apply hit skill effect with random power" <|
-            \randomInt ->
-                Engine.Animal.init
-                    |> Engine.Animal.applySkillEffect (Engine.Skill.Hit randomInt)
-                    |> .health
-                    |> Expect.equal
-                        (if randomInt >= 100 then
-                            ( 0, 100 )
-
-                         else if randomInt < 0 then
-                            ( 100, 100 )
-
-                         else
-                            ( 100 - randomInt, 100 )
-                        )
-        , fuzz2 int int "Apply list of hit skill effects with random power" <|
-            \randomInt randomInt2 ->
-                Engine.Animal.init
-                    |> Engine.Animal.applySkillEffects [ Engine.Skill.Hit randomInt, Engine.Skill.Hit randomInt2 ]
-                    |> .health
-                    |> Expect.equal
-                        (if max 0 randomInt + max 0 randomInt2 >= 100 then
-                            ( 0, 100 )
-
-                         else if max 0 randomInt + max 0 randomInt2 < 0 then
-                            ( 100, 100 )
-
-                         else
-                            ( 100 - (max 0 randomInt + max 0 randomInt2), 100 )
-                        )
-        ]
+-- animalState : Test
+-- animalState =
+--     describe "Animal state"
+--         [ fuzz int "Hit animal with random power, check if alive" <|
+--             \randomInt ->
+--                 Engine.Animal.init
+--                     |> Engine.Animal.applySkillEffect (Engine.Skill.Hit randomInt)
+--                     |> Engine.Animal.isAlive
+--                     |> Expect.equal
+--                         (randomInt < 100)
+--         ]
+-- animalSkillEffects : Test
+-- animalSkillEffects =
+--     describe "Skill effects"
+--         [ fuzz int "Apply hit skill effect with random power" <|
+--             \randomInt ->
+--                 Engine.Animal.init
+--                     |> Engine.Animal.applySkillEffect (Engine.Skill.Hit randomInt)
+--                     |> .health
+--                     |> Expect.equal
+--                         (if randomInt >= 100 then
+--                             ( 0, 100 )
+--                          else if randomInt < 0 then
+--                             ( 100, 100 )
+--                          else
+--                             ( 100 - randomInt, 100 )
+--                         )
+--         , fuzz2 int int "Apply list of hit skill effects with random power" <|
+--             \randomInt randomInt2 ->
+--                 Engine.Animal.init
+--                     |> Engine.Animal.applySkillEffects [ Engine.Skill.Hit randomInt, Engine.Skill.Hit randomInt2 ]
+--                     |> .health
+--                     |> Expect.equal
+--                         (if max 0 randomInt + max 0 randomInt2 >= 100 then
+--                             ( 0, 100 )
+--                          else if max 0 randomInt + max 0 randomInt2 < 0 then
+--                             ( 100, 100 )
+--                          else
+--                             ( 100 - (max 0 randomInt + max 0 randomInt2), 100 )
+--                         )
+--         ]
 
 
 animalView : Test

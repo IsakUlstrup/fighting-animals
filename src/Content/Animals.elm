@@ -1,4 +1,4 @@
-module Content.Animals exposing (enemySloth, playerPanda)
+module Content.Animals exposing (playerPanda)
 
 import Content.Skills as Skills
 import Engine.Animal as Animal exposing (Animal)
@@ -11,9 +11,3 @@ playerPanda =
         |> Animal.withSkill Skills.debuffSkill
         |> Animal.withSkill Skills.buffSkill
         |> Animal.withSkill Skills.basicSkill
-
-
-enemySloth : Animal
-enemySloth =
-    Animal.init
-        |> Animal.withName "Tree"
