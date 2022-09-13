@@ -40,6 +40,12 @@ newSkillTests =
                     |> .description
                     |> Expect.equal
                         randomString
+        , fuzz int "new skill with random cost" <|
+            \randomInt ->
+                Engine.Skill.initHit 10
+                    |> Engine.Skill.withEnergyCost randomInt
+                    |> .energyCost
+                    |> Expect.equal randomInt
         , fuzz int "new skill with random use time, should be >0" <|
             \randomInt ->
                 Engine.Skill.initBuff 10

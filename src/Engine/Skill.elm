@@ -11,6 +11,7 @@ module Engine.Skill exposing
     , use
     , useTimePercentage
     , withDescription
+    , withEnergyCost
     , withName
     , withUseTime
     )
@@ -19,6 +20,7 @@ module Engine.Skill exposing
 type alias Skill =
     { name : String
     , description : String
+    , energyCost : Int
     , useTime : Int
     , state : SkillState
     , effect : SkillEffect
@@ -45,11 +47,12 @@ type SkillEffect
 cooldownTime is intended to be milliseconds
 
 -}
-new : String -> String -> SkillEffect -> Int -> Skill
-new name description effect useTime =
+new : String -> String -> Int -> SkillEffect -> Int -> Skill
+new name description energyCost effect useTime =
     Skill
         name
         description
+        energyCost
         useTime
         Ready
         effect
@@ -59,21 +62,21 @@ new name description effect useTime =
 -}
 initHit : Int -> Skill
 initHit power =
-    new "Unnamed Skill" "Hit type" (Hit <| max 0 power) 500
+    new "Unnamed Skill" "Hit type" 0 (Hit <| max 0 power) 500
 
 
 {-| Initial hit skill with provided power
 -}
 initBuff : Int -> Skill
 initBuff power =
-    new "Unnamed Skill" "Buff type" (Buff <| max 0 power) 500
+    new "Unnamed Skill" "Buff type" 0 (Buff <| max 0 power) 500
 
 
 {-| Initial debuff skill with provided power
 -}
 initDebuff : Int -> Skill
 initDebuff power =
-    new "Unnamed Skill" "Debuff type" (Debuff <| max 0 power) 500
+    new "Unnamed Skill" "Debuff type" 0 (Debuff <| max 0 power) 500
 
 
 {-| Set skill name
@@ -88,6 +91,13 @@ withName name skill =
 withDescription : String -> Skill -> Skill
 withDescription description skill =
     { skill | description = description }
+
+
+{-| Set skill energy cost
+-}
+withEnergyCost : Int -> Skill -> Skill
+withEnergyCost cost skill =
+    { skill | energyCost = cost }
 
 
 {-| Set skill use time
