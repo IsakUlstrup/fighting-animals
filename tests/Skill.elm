@@ -45,7 +45,7 @@ newSkillTests =
                 Engine.Skill.initHit 10
                     |> Engine.Skill.withEnergyCost randomInt
                     |> .energyCost
-                    |> Expect.equal randomInt
+                    |> Expect.equal (max 0 randomInt)
         , fuzz int "new skill with random use time, should be >0" <|
             \randomInt ->
                 Engine.Skill.initBuff 10

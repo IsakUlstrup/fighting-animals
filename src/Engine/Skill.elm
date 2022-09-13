@@ -97,7 +97,7 @@ withDescription description skill =
 -}
 withEnergyCost : Int -> Skill -> Skill
 withEnergyCost cost skill =
-    { skill | energyCost = cost }
+    { skill | energyCost = max 0 cost }
 
 
 {-| Set skill use time
