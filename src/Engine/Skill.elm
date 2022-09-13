@@ -2,7 +2,6 @@ module Engine.Skill exposing
     ( Skill
     , SkillEffect(..)
     , SkillState(..)
-    , cooldownPercentage
     , effectToString
     , initBuff
     , initDebuff
@@ -10,7 +9,7 @@ module Engine.Skill exposing
     , isReady
     , tick
     , use
-    , withCooldown
+    , useTimePercentage
     , withDescription
     , withName
     , withUseTime
@@ -29,7 +28,6 @@ type alias Skill =
 
 type SkillState
     = Ready
-    | Cooling Int
     | Active Int
 
 
@@ -55,7 +53,7 @@ new name description cooldownTime effect useTime =
         description
         (max 0 cooldownTime)
         useTime
-        (Cooling (max 0 cooldownTime))
+        Ready
         effect
 
 
@@ -94,24 +92,6 @@ withDescription description skill =
     { skill | description = description }
 
 
-{-| Set skill cooldown
-
-Resets cooldown time if skill is cooling
-
--}
-withCooldown : Int -> Skill -> Skill
-withCooldown cooldown skill =
-    case skill.state of
-        Cooling _ ->
-            { skill
-                | cooldownTime = max 0 cooldown
-                , state = Cooling <| max 0 cooldown
-            }
-
-        _ ->
-            { skill | cooldownTime = max 0 cooldown }
-
-
 {-| Set skill use time
 
 Resets use time if skill is active
@@ -141,13 +121,6 @@ setReady skill =
     { skill | state = Ready }
 
 
-{-| Set skill state to cooling with timer at 0
--}
-setCooling : Skill -> Skill
-setCooling skill =
-    { skill | state = Cooling skill.cooldownTime }
-
-
 {-| Set skill state to active with timer at 0
 -}
 setActive : Skill -> Skill
@@ -163,9 +136,6 @@ tickState time skill =
         Ready ->
             skill
 
-        Cooling current ->
-            { skill | state = Cooling <| max 0 <| current - time }
-
         Active current ->
             { skill | state = Active <| max 0 <| current - time }
 
@@ -178,40 +148,30 @@ tick dt skill =
         Ready ->
             ( skill, Nothing )
 
-        Cooling current ->
-            if current - max 0 dt <= 0 then
-                ( setReady skill, Nothing )
-
-            else
-                ( tickState (max 0 dt) skill, Nothing )
-
         Active current ->
             if current - max 0 dt <= 0 then
-                ( setCooling skill, Just skill.effect )
+                ( setReady skill, Just skill.effect )
 
             else
                 ( tickState (max 0 dt) skill, Nothing )
 
 
-{-| Get skill cooldown progress in percentage 0-100
+{-| Get skill use time progress in percentage 0-100
 
-returns 100 for ready and active state
+returns 100 for ready state
 
 useful for rendering
 
 -}
-cooldownPercentage : Skill -> Int
-cooldownPercentage skill =
+useTimePercentage : Skill -> Int
+useTimePercentage skill =
     case skill.state of
-        Cooling current ->
-            if skill.cooldownTime == 0 then
+        Active current ->
+            if skill.useTime == 0 then
                 100
 
             else
-                (toFloat (skill.cooldownTime - current) / toFloat skill.cooldownTime) * 100 |> round
-
-        Active _ ->
-            100
+                (toFloat (skill.useTime - current) / toFloat skill.useTime) * 100 |> round
 
         Ready ->
             100
@@ -241,9 +201,6 @@ isReady skill =
             True
 
         Active _ ->
-            False
-
-        Cooling _ ->
             False
 
 

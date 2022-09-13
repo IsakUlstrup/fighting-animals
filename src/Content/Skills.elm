@@ -12,7 +12,7 @@ basicSkill =
     Skill.initHit 12
         |> Skill.withName "Basic skill"
         |> Skill.withDescription "A basic skill, nothing special"
-        |> Skill.withCooldown 1500
+        |> Skill.withUseTime 1500
         |> Skill.withUseTime 300
 
 
@@ -21,7 +21,7 @@ buffSkill =
     Skill.initBuff 25
         |> Skill.withName "Buff"
         |> Skill.withDescription "Applies a buff"
-        |> Skill.withCooldown 3000
+        |> Skill.withUseTime 3000
         |> Skill.withUseTime 500
 
 

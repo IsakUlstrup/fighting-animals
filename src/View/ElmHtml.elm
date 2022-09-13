@@ -13,9 +13,6 @@ skillEffectClass : Skill -> Attribute msg
 skillEffectClass skill =
     class <|
         case skill.state of
-            Skill.Cooling _ ->
-                "skill-cooling"
-
             Skill.Active _ ->
                 "skill-active"
 
@@ -65,7 +62,7 @@ viewSkillButton clickMsg skill =
         , skillStateClass skill
         , skillEffectClass skill
         ]
-        [ percentageMeter (Skill.cooldownPercentage skill)
+        [ percentageMeter (Skill.useTimePercentage skill)
         , div
             [ class "skill-meta" ]
             [ h5 [] [ text skill.name ]

@@ -1,4 +1,4 @@
-module Engine.Animal exposing (Animal, healthPercentage, init, tickSkills, useAllSkills, useSkillAtIndex, withHealth, withName, withSkill)
+module Engine.Animal exposing (Animal, energyPercentage, init, tickSkills, useAllSkills, useSkillAtIndex, withHealth, withName, withSkill)
 
 import Engine.Skill as Skill exposing (Skill, SkillEffect)
 
@@ -99,6 +99,8 @@ tickSkills dt animal =
 ---- VIEW HELPERS ----
 
 
-healthPercentage : Animal -> Int
-healthPercentage animal =
+{-| Get energy percentage (0-100)
+-}
+energyPercentage : Animal -> Int
+energyPercentage animal =
     (toFloat (Tuple.first animal.health) / toFloat (Tuple.second animal.health)) * 100 |> round

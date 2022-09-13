@@ -178,10 +178,10 @@ animalSkillsTests =
 animalView : Test
 animalView =
     describe "View helpers"
-        [ test "Health percentage" <|
+        [ test "Energy percentage" <|
             \_ ->
                 Engine.Animal.init
-                    |> Engine.Animal.healthPercentage
+                    |> Engine.Animal.energyPercentage
                     |> Expect.equal
                         100
         ]
